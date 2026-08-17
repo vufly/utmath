@@ -30,6 +30,16 @@ button:disabled {
   cursor: not-allowed;
   opacity: 0.48;
 }
+.sr-only {
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  padding: 0;
+  position: absolute;
+  width: 1px;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+}
 
 .page {
   margin: 0 auto;
@@ -133,6 +143,39 @@ h2 {
   color: #475569;
   font-weight: 600;
 }
+.reward-strip .reward-card {
+  align-items: center;
+  display: flex;
+  justify-content: center;
+  min-height: 96px;
+}
+.reward-count,
+.streak-count {
+  align-items: center;
+  color: #172554;
+  display: flex;
+  gap: 10px;
+}
+.reward-strip .reward-count strong,
+.reward-strip .streak-count strong {
+  font-size: 2rem;
+}
+.reward-icon {
+  display: block;
+  flex: 0 0 auto;
+}
+.star-icon {
+  height: 42px;
+  width: 42px;
+}
+.fire-icon {
+  height: 42px;
+  width: 34px;
+}
+.reward-strip .streak-count span {
+  color: #172554;
+  font-size: 1.05rem;
+}
 .action-stack {
   display: grid;
   gap: 16px;
@@ -178,14 +221,12 @@ h2 {
   font-weight: 600;
 }
 .action-symbol {
-  align-items: center;
   background: #fff;
   border-radius: 50%;
   color: #2563eb;
-  display: inline-flex;
-  font-size: 2rem;
+  display: block;
+  flex: 0 0 auto;
   height: 40px;
-  justify-content: center;
   width: 40px;
 }
 .secondary-action .action-symbol {
@@ -364,6 +405,40 @@ h2 {
 }
 .hint-card p {
   margin: 4px 0 0;
+}
+.hint-frame {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 4px;
+  margin: 10px auto 0;
+  max-width: 350px;
+  width: 100%;
+}
+.hint-counter {
+  align-items: center;
+  aspect-ratio: 1;
+  background: #d1fae5;
+  border: 3px solid #172554;
+  border-radius: 12px;
+  display: flex;
+  justify-content: center;
+}
+.hint-counter.known-counter {
+  background: #dbeafe;
+}
+.hint-counter i {
+  background: #16a34a;
+  border-radius: 50%;
+  height: 20px;
+  width: 20px;
+}
+.hint-counter.known-counter i {
+  background: #2563eb;
+}
+.hint-answer {
+  color: #172554;
+  font-size: 1.125rem;
+  margin-top: 10px !important;
 }
 .summary-page {
   align-content: center;

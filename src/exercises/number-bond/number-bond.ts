@@ -104,15 +104,22 @@ export function numberBondHint(
   const answer = correctNumberBondAnswer(exercise);
   const generator = exercise.generator?.params;
   const whole = generator?.whole;
+  const partA = generator?.partA;
+  const partB = generator?.partB;
 
   if (typeof whole !== "number")
+    throw new Error("Number bond generator data is invalid.");
+  if (typeof partA !== "number" || typeof partB !== "number")
     throw new Error("Number bond generator data is invalid.");
 
   if (level === 1) {
     return {
       level,
       type: "text",
-      payload: `${whole} gồm hai phần. Con thử nhìn phần còn thiếu nhé.`,
+      payload:
+        exercise.unknown === "whole"
+          ? `${partA} và ${partB} ghép lại tạo thành số nào?`
+          : `${whole} gồm hai phần. Con thử nhìn phần còn thiếu nhé.`,
     };
   }
   if (level === 2) {
@@ -131,7 +138,10 @@ export function numberBondHint(
     level,
     type: "interaction",
     payload: {
-      message: `Con hãy ghép hai phần để tạo thành ${whole}.`,
+      message:
+        exercise.unknown === "whole"
+          ? `${partA} và ${partB} tạo thành ${answer}.`
+          : `Phần còn thiếu là ${answer}.`,
       answer,
     },
   };
