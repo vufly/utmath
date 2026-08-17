@@ -1,0 +1,4 @@
+docs/PRODUCT_TECHNICAL_SPEC.md
+node_modules/
+dist/
+coverage/
