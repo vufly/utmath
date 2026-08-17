@@ -513,6 +513,37 @@ h2 {
   border-radius: 50%;
   color: #065f46;
 }
+.missing-number-frame {
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(5, 1fr);
+  margin: 12px auto 0;
+  max-width: 340px;
+}
+.missing-number-frame span {
+  align-items: center;
+  aspect-ratio: 1;
+  background: #fff;
+  border: 3px solid #172554;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+}
+.missing-number-frame span.known-counter {
+  background: #dbeafe;
+}
+.missing-number-frame span.split-counter {
+  border-left-width: 7px;
+}
+.missing-number-frame i {
+  background: #2563eb;
+  border-radius: 50%;
+  height: 18px;
+  width: 18px;
+}
+.missing-number-frame span:not(.known-counter) i {
+  display: none;
+}
 .summary-page {
   align-content: center;
   display: grid;

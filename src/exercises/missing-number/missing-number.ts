@@ -52,7 +52,7 @@ export function generateMissingNumberExercise(options: {
     promptKey: "missing-number.solve",
     generator: {
       generatorId: "missing-number",
-      generatorVersion: 1,
+      generatorVersion: 2,
       seed: options.seed,
       params: {
         form,
@@ -108,8 +108,14 @@ export function missingNumberHint(
       type: "text",
       payload:
         exercise.operation === "add"
-          ? "Con thử nghĩ về hai phần và cả số nhé."
-          : "Phép trừ cũng là tìm phần còn lại.",
+          ? exercise.unknown === "result"
+            ? "Con ghép hai phần lại để tìm cả số nhé."
+            : "Con thử tìm phần còn thiếu để ghép thành cả số nhé."
+          : exercise.unknown === "right"
+            ? "Con nhìn phần còn lại, rồi tìm số đã được lấy đi nhé."
+            : exercise.unknown === "left"
+              ? "Số ban đầu bằng phần đã lấy đi cộng phần còn lại."
+              : "Con lấy đi một phần để tìm số còn lại.",
     };
   if (level === 2)
     return { level, type: "visual", payload: exercise.generator?.params };

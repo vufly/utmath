@@ -90,7 +90,7 @@
           : module === 'C'
             ? generateArithmeticExercise({ seed })
             : module === 'D'
-              ? generateMissingNumberExercise({ seed })
+              ? generateMissingNumberExercise({ seed, form: ['add-result', 'add-second', 'add-first', 'sub-result', 'sub-removed', 'sub-start'][answered % 6] as 'add-result' | 'add-second' | 'add-first' | 'sub-result' | 'sub-removed' | 'sub-start' })
               : module === 'E'
                 ? generateStoryExercise({ seed })
                 : generateTriangleExercise({ seed });

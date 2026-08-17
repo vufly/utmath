@@ -37,11 +37,25 @@ describe("missing-number exercises", () => {
       form: "sub-start",
     });
     expect(missingNumberHint(exercise, 1).payload).toBe(
-      "Phép trừ cũng là tìm phần còn lại.",
+      "Số ban đầu bằng phần đã lấy đi cộng phần còn lại.",
     );
     expect(missingNumberHint(exercise, 2).type).toBe("visual");
     expect(missingNumberHint(exercise, 3).payload).toBe(
       `Đáp án là ${missingNumberAnswer(exercise)}.`,
     );
+  });
+
+  it("uses specific structural prompts for each inverse form", () => {
+    const removed = generateMissingNumberExercise({
+      seed: 4,
+      form: "sub-removed",
+    });
+    const addend = generateMissingNumberExercise({
+      seed: 4,
+      form: "add-second",
+    });
+
+    expect(missingNumberHint(removed, 1).payload).toContain("lấy đi");
+    expect(missingNumberHint(addend, 1).payload).toContain("phần còn thiếu");
   });
 });
