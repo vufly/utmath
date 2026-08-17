@@ -272,6 +272,150 @@ h2 {
 .parent-actions {
   margin-top: 24px;
 }
+.exercise-page {
+  display: grid;
+  grid-template-rows: auto 1fr auto;
+}
+.exercise-header {
+  color: #475569;
+  display: flex;
+  font-weight: 700;
+  justify-content: space-between;
+  margin-bottom: 16px;
+}
+.exercise-card {
+  align-self: center;
+  background: #fff;
+  border: 3px solid #172554;
+  border-radius: 28px;
+  padding: 28px;
+  text-align: center;
+}
+.exercise-card h1 {
+  font-size: clamp(1.85rem, 6vw, 2.8rem);
+}
+.exercise-prompt {
+  color: #475569;
+  font-size: 1.125rem;
+}
+.bond-diagram {
+  display: block;
+  margin: 8px auto;
+  max-width: 360px;
+  width: 100%;
+}
+.bond-diagram text {
+  fill: #172554;
+  font-family: inherit;
+  font-size: 2.25rem;
+  font-weight: 700;
+}
+.answer-panel {
+  margin-top: 18px;
+}
+.hint-button {
+  background: #fef3c7;
+  border: 2px solid #172554;
+  border-radius: 14px;
+  color: #172554;
+  font-weight: 700;
+  min-height: 48px;
+  padding: 10px 18px;
+}
+.number-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(6, 1fr);
+  margin-top: 12px;
+}
+.number-grid button {
+  background: #fff;
+  border: 2px solid #172554;
+  border-radius: 14px;
+  color: #172554;
+  font-size: 1.25rem;
+  font-weight: 700;
+  min-height: 54px;
+}
+.number-grid button:hover {
+  background: #dbeafe;
+}
+.answer-feedback {
+  background: #fff1f2;
+  border-radius: 12px;
+  color: #9f1239;
+  font-weight: 700;
+  margin: 12px auto 0;
+  max-width: 440px;
+  padding: 12px;
+}
+.answer-feedback.success {
+  background: #dcfce7;
+  color: #166534;
+}
+.hint-card {
+  background: #eff6ff;
+  border: 2px solid #2563eb;
+  border-radius: 14px;
+  margin: 14px auto 0;
+  max-width: 440px;
+  padding: 12px 16px;
+  text-align: left;
+}
+.hint-card p {
+  margin: 4px 0 0;
+}
+.summary-page {
+  align-content: center;
+  display: grid;
+  text-align: center;
+}
+.summary-card {
+  background: #fff;
+  border: 3px solid #172554;
+  border-radius: 32px;
+  box-shadow: 8px 8px 0 #34d399;
+  margin: auto;
+  max-width: 560px;
+  padding: 32px;
+}
+.summary-star {
+  height: 96px;
+  width: 96px;
+}
+.stars-earned {
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+.backup-card {
+  background: #fff;
+  border: 3px solid #172554;
+  border-radius: 28px;
+  margin-top: 24px;
+  max-width: 560px;
+  padding: 28px;
+}
+.import-control {
+  border: 2px dashed #2563eb;
+  border-radius: 16px;
+  display: grid;
+  font-weight: 700;
+  gap: 8px;
+  margin-top: 16px;
+  padding: 16px;
+}
+.storage-warning {
+  background: #fff1f2;
+  border: 2px solid #be123c;
+  bottom: 16px;
+  color: #9f1239;
+  font-weight: 700;
+  left: 16px;
+  padding: 12px;
+  position: fixed;
+  right: 16px;
+  z-index: 20;
+}
 
 .modal-backdrop {
   align-items: center;

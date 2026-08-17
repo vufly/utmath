@@ -1,8 +1,11 @@
 <script lang="ts">
   import type { ChildProfile } from '../../app/state/profile';
 
-  let { profile, onStartPractice, onFreePractice, onOpenParent }: {
+  let { profile, totalStars, currentStreak, todayComplete, onStartPractice, onFreePractice, onOpenParent }: {
     profile: ChildProfile;
+    totalStars: number;
+    currentStreak: number;
+    todayComplete: boolean;
     onStartPractice: () => void;
     onFreePractice: () => void;
     onOpenParent: () => void;
@@ -25,14 +28,14 @@
   </section>
 
   <section class="reward-strip" aria-label="Phần thưởng">
-    <div><strong>0</strong><span>ngôi sao</span></div>
-    <div><strong>0</strong><span>ngày liên tiếp</span></div>
+    <div><strong>{totalStars}</strong><span>ngôi sao</span></div>
+    <div><strong>{currentStreak}</strong><span>ngày liên tiếp</span></div>
   </section>
 
   <section class="action-stack" aria-label="Chọn hoạt động">
     <button class="primary-action" type="button" onclick={onStartPractice}>
       <span class="action-symbol" aria-hidden="true">+</span>
-      <span><strong>Bài học hôm nay</strong><small>Khoảng 10 phút</small></span>
+      <span><strong>{todayComplete ? 'Luyện thêm hôm nay' : 'Bài học hôm nay'}</strong><small>Khoảng 10 phút</small></span>
     </button>
     <button class="secondary-action" type="button" onclick={onFreePractice}>
       <span class="action-symbol" aria-hidden="true">○</span>
