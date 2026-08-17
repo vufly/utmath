@@ -584,9 +584,11 @@ h2 {
   width: 58px;
 }
 .story-birds .arriving-bird {
+  display: block;
   transform: translateY(-8px);
 }
 .story-birds .departing-bird {
+  display: block;
   opacity: 0.72;
   transform: translate(12px, -12px);
 }
@@ -596,6 +598,21 @@ h2 {
   max-height: 290px;
   max-width: 290px;
   width: 100%;
+}
+.triangle-figure polygon {
+  cursor: pointer;
+  fill: transparent;
+  stroke: transparent;
+  stroke-width: 4;
+}
+.triangle-figure polygon.selected {
+  fill: rgb(251 191 36 / 45%);
+  stroke: #d97706;
+}
+.triangle-count {
+  color: #475569;
+  font-size: 1.125rem;
+  font-weight: 700;
 }
 
 .modal-backdrop {

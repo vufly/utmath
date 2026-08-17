@@ -9,6 +9,7 @@ export interface TriangleDefinition {
   id: string;
   path: string;
   validTriangleIds: string[];
+  regions?: Array<{ id: string; points: string }>;
 }
 
 export const triangleDefinitions: TriangleDefinition[] = [
@@ -28,6 +29,16 @@ export const triangleDefinitions: TriangleDefinition[] = [
     id: "three-triangles",
     path: "M100 15 15 185h170Z M57 100 143 100",
     validTriangleIds: ["top", "outer"],
+  },
+  {
+    id: "three-separate",
+    path: "M10 15h180v110H10Z M35 35 15 100h40Z M100 35 80 100h40Z M165 35 145 100h40Z",
+    validTriangleIds: ["left", "middle", "right"],
+    regions: [
+      { id: "left", points: "35,35 15,100 55,100" },
+      { id: "middle", points: "100,35 80,100 120,100" },
+      { id: "right", points: "165,35 145,100 185,100" },
+    ],
   },
 ];
 
@@ -57,7 +68,7 @@ export function generateTriangleExercise(options: {
       },
     },
     definitionId: definition.id,
-    answerMode: "count",
+    answerMode: definition.regions ? "select" : "count",
   };
 }
 
