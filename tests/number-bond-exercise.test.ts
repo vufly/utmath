@@ -86,4 +86,24 @@ describe("NumberBondExercise", () => {
     await fireEvent.click(screen.getByRole("button", { name: String(answer) }));
     expect(onAnswer).toHaveBeenCalledWith(answer);
   });
+
+  it("renders combine groups before requesting the whole", async () => {
+    const onAnswer = vi.fn();
+    const combine = generateNumberBondExercise({ seed: 1, stage: "combine" });
+    const combineAnswer = correctNumberBondAnswer(combine);
+    render(NumberBondExercise, {
+      exercise: combine,
+      answered: 0,
+      onAnswer,
+      onHint: vi.fn(),
+    });
+
+    expect(screen.getByText("Ghép hai nhóm")).toBeInTheDocument();
+    expect(screen.getByLabelText(/chấm và .* chấm/i)).toBeInTheDocument();
+    await fireEvent.click(
+      screen.getByRole("button", { name: String(combineAnswer) }),
+    );
+
+    expect(onAnswer).toHaveBeenCalledWith(combineAnswer);
+  });
 });

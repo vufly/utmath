@@ -23,6 +23,33 @@ describe("number bond exercises", () => {
     }
   });
 
+  it("supports visual combine, split, make-five, make-ten, and fact-family stages", () => {
+    const combine = generateNumberBondExercise({ seed: 1, stage: "combine" });
+    const split = generateNumberBondExercise({ seed: 1, stage: "split" });
+    const makeFive = generateNumberBondExercise({
+      seed: 1,
+      stage: "make-five",
+    });
+    const makeTen = generateNumberBondExercise({ seed: 1, stage: "make-ten" });
+    const family = generateNumberBondExercise({
+      seed: 1,
+      stage: "fact-family",
+    });
+
+    expect(combine).toMatchObject({
+      presentation: "combine",
+      unknown: "whole",
+    });
+    expect(split).toMatchObject({ presentation: "split", unknown: "part-b" });
+    expect(makeFive.generator?.params.whole).toBe(5);
+    expect(makeTen.generator?.params.whole).toBe(10);
+    expect(family).toMatchObject({
+      presentation: "fact-family",
+      unknown: "whole",
+    });
+    expect(family.skillIds).toContain("B.fact-family");
+  });
+
   it("returns meaningful wrong-answer evidence and progressive hints", () => {
     const exercise = generateNumberBondExercise({
       seed: 2,

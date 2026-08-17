@@ -82,7 +82,11 @@
             flashDurationMs: skillStates.find((state) => state.skillId === 'A.quantity.flash')?.score && skillStates.find((state) => state.skillId === 'A.quantity.flash')!.score >= 0.7 ? 800 : 1300,
           })
         : module === 'B'
-          ? generateNumberBondExercise({ seed, whole: 5, difficulty: answered > 4 ? 2 : 1 })
+          ? generateNumberBondExercise({
+              seed,
+              difficulty: answered > 4 ? 2 : 1,
+              stage: ['combine', 'split', 'diagram', 'make-five', 'make-ten', 'fact-family'][answered % 6] as 'combine' | 'split' | 'diagram' | 'make-five' | 'make-ten' | 'fact-family',
+            })
           : module === 'C'
             ? generateArithmeticExercise({ seed })
             : module === 'D'

@@ -440,6 +440,52 @@ h2 {
   font-size: 1.125rem;
   margin-top: 10px !important;
 }
+.bond-counters {
+  align-items: center;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
+  justify-content: center;
+  margin: 28px auto;
+  max-width: 420px;
+}
+.counter-group {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  max-width: 180px;
+}
+.counter-group i,
+.split-counters > i {
+  background: #60a5fa;
+  border: 3px solid #172554;
+  border-radius: 50%;
+  height: 32px;
+  width: 32px;
+}
+.counter-group.green i,
+.split-counters > i {
+  background: #86efac;
+}
+.split-counters > i.known-counter {
+  background: #60a5fa;
+}
+.fact-family {
+  color: #172554;
+  display: grid;
+  font-size: 1.2rem;
+  font-weight: 700;
+  gap: 8px;
+  grid-template-columns: repeat(2, 1fr);
+  margin: 12px auto 0;
+  max-width: 420px;
+}
+.fact-family span {
+  background: #eff6ff;
+  border-radius: 10px;
+  padding: 8px;
+}
 .summary-page {
   align-content: center;
   display: grid;

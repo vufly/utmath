@@ -54,6 +54,7 @@ export interface QuantityExercise extends ExerciseBase {
 
 export interface PartWholeExercise extends ExerciseBase {
   kind: "part-whole";
+  presentation: "combine" | "split" | "diagram" | "fact-family";
   whole?: number;
   partA?: number;
   partB?: number;

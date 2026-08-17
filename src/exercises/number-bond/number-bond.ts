@@ -12,23 +12,41 @@ export interface NumberBondGenerationOptions {
   whole?: number;
   unknown?: PartWholeExercise["unknown"];
   difficulty?: number;
+  stage?:
+    "combine" | "split" | "diagram" | "fact-family" | "make-five" | "make-ten";
 }
 
 export function generateNumberBondExercise(
   options: NumberBondGenerationOptions,
 ): PartWholeExercise {
   const random = createSeededRandom(options.seed);
-  const whole = options.whole ?? random.int(5, 10);
-  const partA = random.int(0, whole);
+  const stage = options.stage ?? "diagram";
+  const whole =
+    options.whole ??
+    (stage === "make-five" ? 5 : stage === "make-ten" ? 10 : random.int(5, 10));
+  const partA = random.int(
+    stage === "combine" || stage === "split" ? 1 : 0,
+    whole - (stage === "combine" || stage === "split" ? 1 : 0),
+  );
   const partB = whole - partA;
   const unknown =
     options.unknown ??
-    (random.pick([
-      "part-a",
-      "part-b",
-      "whole",
-    ] as const) as PartWholeExercise["unknown"]);
+    (stage === "combine" || stage === "fact-family"
+      ? "whole"
+      : stage === "split"
+        ? "part-b"
+        : random.pick(["part-a", "part-b", "whole"] as const));
+  const presentation =
+    stage === "make-five" || stage === "make-ten" ? "diagram" : stage;
   const pairSkillId = numberBondPairSkillId(whole, partA, partB);
+  const stageSkillId =
+    stage === "make-five"
+      ? "B.make5"
+      : stage === "make-ten"
+        ? "B.make10"
+        : stage === "fact-family"
+          ? "B.fact-family"
+          : undefined;
 
   return {
     id: `number-bond-${options.seed}`,
@@ -38,16 +56,28 @@ export function generateNumberBondExercise(
       `B.bond.${whole}`,
       pairSkillId,
       `B.part-whole.${unknown === "whole" ? "missing-whole" : "missing-part"}`,
+      ...(stageSkillId ? [stageSkillId] : []),
     ],
     difficulty: options.difficulty ?? 1,
-    representation: "part-whole",
-    promptKey: "number-bond.find-missing",
+    representation:
+      presentation === "combine" || presentation === "split"
+        ? "object-scene"
+        : "part-whole",
+    promptKey:
+      presentation === "combine"
+        ? "number-bond.combine"
+        : presentation === "split"
+          ? "number-bond.split"
+          : presentation === "fact-family"
+            ? "number-bond.fact-family"
+            : "number-bond.find-missing",
     generator: {
       generatorId: "number-bond-part-whole",
-      generatorVersion: 1,
+      generatorVersion: 2,
       seed: options.seed,
-      params: { whole, partA, partB, unknown },
+      params: { whole, partA, partB, unknown, stage, presentation },
     },
+    presentation,
     whole: unknown === "whole" ? undefined : whole,
     partA: unknown === "part-a" ? undefined : partA,
     partB: unknown === "part-b" ? undefined : partB,
@@ -117,9 +147,13 @@ export function numberBondHint(
       level,
       type: "text",
       payload:
-        exercise.unknown === "whole"
-          ? `${partA} và ${partB} ghép lại tạo thành số nào?`
-          : `${whole} gồm hai phần. Con thử nhìn phần còn thiếu nhé.`,
+        exercise.presentation === "combine"
+          ? `Ghép ${partA} chấm và ${partB} chấm lại nhé.`
+          : exercise.presentation === "split"
+            ? `Có ${whole} chấm. Tìm phần chưa có màu.`
+            : exercise.unknown === "whole"
+              ? `${partA} và ${partB} ghép lại tạo thành số nào?`
+              : `${whole} gồm hai phần. Con thử nhìn phần còn thiếu nhé.`,
     };
   }
   if (level === 2) {
