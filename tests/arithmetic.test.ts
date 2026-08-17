@@ -7,11 +7,19 @@ import {
 } from "../src/exercises/arithmetic/arithmetic";
 
 const strategies: ArithmeticStrategy[] = [
+  "plus0",
+  "minus0",
   "plus1",
   "minus1",
+  "plus2",
+  "minus2",
+  "start-larger",
   "doubles",
+  "near-doubles",
+  "five-anchor",
   "make10",
   "subtract-bond",
+  "mixed",
 ];
 
 describe("mental arithmetic exercises", () => {
@@ -38,5 +46,12 @@ describe("mental arithmetic exercises", () => {
     expect(arithmeticHint(exercise, 3).payload).toBe(
       `Đáp án là ${exercise.result}.`,
     );
+  });
+
+  it("retains underlying remediation skill for mixed facts", () => {
+    const exercise = generateArithmeticExercise({ seed: 9, strategy: "mixed" });
+
+    expect(exercise.skillIds).toContain("C.mixed");
+    expect(exercise.skillIds).toContain(exercise.strategySkillId);
   });
 });

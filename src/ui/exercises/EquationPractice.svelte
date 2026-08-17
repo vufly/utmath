@@ -16,6 +16,16 @@
       ? `${exercise.left} ${operator} ${exercise.right} = ?`
       : `${exercise.left ?? "?"} ${operator} ${exercise.right ?? "?"} = ${exercise.result ?? "?"}`,
   );
+  const numberLineStart = $derived(
+    exercise.kind === "arithmetic" && exercise.operation === "add"
+      ? Math.max(exercise.left, exercise.right)
+      : exercise.kind === "arithmetic"
+        ? exercise.left
+        : undefined,
+  );
+  const numberLineEnd = $derived(
+    exercise.kind === "arithmetic" ? exercise.result : undefined,
+  );
 </script>
 
 <main class="exercise-page page">
@@ -24,7 +34,7 @@
     <p class="eyebrow">{exercise.kind === "arithmetic" ? "Tính nhẩm" : "Số còn thiếu"}</p>
     <h1 id="equation-title">Tìm số đúng</h1>
     <p class="large-equation">{equation}</p>
-    {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{typeof hint.payload === "string" ? hint.payload : "Con thử nhìn mối liên hệ giữa các số nhé."}</p></aside>{/if}
+    {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{typeof hint.payload === "string" ? hint.payload : "Con thử nhìn mối liên hệ giữa các số nhé."}</p>{#if hint.type === "visual" && numberLineStart !== undefined && numberLineEnd !== undefined}<div class="strategy-number-line" aria-label={`Từ ${numberLineStart} đến ${numberLineEnd}`}>{#each Array(11) as _, value}<span class:line-start={value === numberLineStart} class:line-end={value === numberLineEnd} class:line-step={value > Math.min(numberLineStart, numberLineEnd) && value < Math.max(numberLineStart, numberLineEnd)}>{value}</span>{/each}</div>{/if}</aside>{/if}
     {#if feedback}<p class:success={feedback.includes("Đúng")} class="answer-feedback" role="status">{feedback}</p>{/if}
   </section>
   <section class="answer-panel" aria-label="Chọn câu trả lời"><button class="hint-button" type="button" onclick={onHint}>Gợi ý</button><div class="number-grid">{#each Array(11) as _, value}<button type="button" onclick={() => onAnswer(value)}>{value}</button>{/each}</div></section>
