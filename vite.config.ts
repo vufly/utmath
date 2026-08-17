@@ -38,6 +38,9 @@ export default defineConfig({
   build: {
     target: "safari15",
   },
+  resolve: {
+    conditions: ["browser"],
+  },
   test: {
     environment: "jsdom",
     setupFiles: ["./tests/setup.ts"],
