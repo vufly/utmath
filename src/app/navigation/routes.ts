@@ -1,5 +1,6 @@
 export type Route =
   | "home"
+  | "free-practice"
   | "session"
   | "summary"
   | "parent-pin"
@@ -9,6 +10,7 @@ export type Route =
 
 const pathToRoute: Record<string, Route> = {
   "/": "home",
+  "/free-practice": "free-practice",
   "/session": "session",
   "/summary": "summary",
   "/parent": "parent-pin",
@@ -19,6 +21,7 @@ const pathToRoute: Record<string, Route> = {
 
 const routeToPath: Record<Route, string> = {
   home: "/",
+  "free-practice": "/free-practice",
   session: "/session",
   summary: "/summary",
   "parent-pin": "/parent",

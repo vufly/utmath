@@ -5,6 +5,7 @@
 
   const labels: Record<Route, { title: string; detail: string }> = {
     home: { title: '', detail: '' },
+    'free-practice': { title: '', detail: '' },
     session: { title: 'Bài học hôm nay', detail: 'Bài học số đầu tiên đang được chuẩn bị.' },
     summary: { title: 'Hoàn thành rồi!', detail: 'Trang tổng kết sẽ xuất hiện sau mỗi buổi học.' },
     'parent-pin': { title: '', detail: '' },

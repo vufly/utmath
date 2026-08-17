@@ -7,14 +7,20 @@
   import { moduleBCurriculum } from './core/curriculum/module-b';
   import { awardTodayReward, calculateSessionStars, localDateKey } from './core/gamification/rewards';
   import { createInitialSkillState, updateMastery } from './core/mastery/update';
-  import type { AppSettings, Attempt, Hint, PartWholeExercise, RewardState, SessionRecord, SkillState } from './core/types/domain';
+  import type { AppSettings, Attempt, Exercise, Hint, ModuleId, RewardState, SessionRecord, SkillState } from './core/types/domain';
+  import { arithmeticHint, evaluateArithmeticAnswer, generateArithmeticExercise } from './exercises/arithmetic/arithmetic';
+  import { evaluateMissingNumberAnswer, generateMissingNumberExercise, missingNumberHint } from './exercises/missing-number/missing-number';
   import { generateNumberBondExercise, evaluateNumberBondAnswer, numberBondHint } from './exercises/number-bond/number-bond';
+  import { evaluateQuantityAnswer, generateQuantityExercise, quantityHint } from './exercises/quantity/quantity';
   import { migrateProgressExport } from './persistence/export-import/progress-export';
   import { IndexedDbProgressRepository } from './persistence/indexeddb/repository';
   import { defaultRewards, defaultSettings } from './persistence/repository';
   import Home from './ui/child/Home.svelte';
+  import FreePractice from './ui/child/FreePractice.svelte';
   import SessionSummary from './ui/child/SessionSummary.svelte';
+  import EquationPractice from './ui/exercises/EquationPractice.svelte';
   import NumberBondExercise from './ui/exercises/NumberBondExercise.svelte';
+  import QuantityPractice from './ui/exercises/QuantityPractice.svelte';
   import Backup from './ui/parent/Backup.svelte';
   import Dashboard from './ui/parent/Dashboard.svelte';
   import ParentPin from './ui/parent/ParentPin.svelte';
@@ -42,7 +48,8 @@
   let sessionSeed = 0;
   let answered = 0;
   let independentCorrect = 0;
-  let currentExercise: PartWholeExercise | undefined;
+  let currentExercise: Exercise | undefined;
+  let currentModule: ModuleId = 'B';
   let feedback = '';
   let hint: Hint | undefined;
   let hintLevel: 0 | 1 | 2 | 3 = 0;
@@ -58,7 +65,15 @@
   }
 
   function refreshExercise(): void {
-    currentExercise = generateNumberBondExercise({ seed: sessionSeed + answered, whole: 5, difficulty: answered > 4 ? 2 : 1 });
+    const seed = sessionSeed + answered;
+    currentExercise =
+      currentModule === 'A'
+        ? generateQuantityExercise({ seed })
+        : currentModule === 'B'
+          ? generateNumberBondExercise({ seed, whole: 5, difficulty: answered > 4 ? 2 : 1 })
+          : currentModule === 'C'
+            ? generateArithmeticExercise({ seed })
+            : generateMissingNumberExercise({ seed });
     feedback = '';
     hint = undefined;
     hintLevel = 0;
@@ -126,11 +141,12 @@
     }
   }
 
-  async function startSession(type: SessionRecord['type']): Promise<void> {
+  async function startSession(type: SessionRecord['type'], module: ModuleId = 'B'): Promise<void> {
     if (!repository) return;
     const now = Date.now();
     sessionTarget = type === 'free-practice' ? 10 : 16;
     sessionSeed = now;
+    currentModule = module;
     answered = 0;
     independentCorrect = 0;
     activeSession = {
@@ -138,7 +154,7 @@
       type,
       startedAt: now,
       attemptIds: [],
-      plannedSkillIds: ['B.bond.5'],
+      plannedSkillIds: [`${module}.start`],
       practicedSkillIds: [],
       completed: false,
     };
@@ -149,7 +165,12 @@
 
   async function answerExercise(answer: number): Promise<void> {
     if (!repository || !activeSession || !currentExercise) return;
-    const evaluation = evaluateNumberBondAnswer(currentExercise, answer);
+    let evaluation;
+    if (currentExercise.kind === 'part-whole') evaluation = evaluateNumberBondAnswer(currentExercise, answer);
+    else if (currentExercise.kind === 'quantity') evaluation = evaluateQuantityAnswer(currentExercise, answer);
+    else if (currentExercise.kind === 'arithmetic') evaluation = evaluateArithmeticAnswer(currentExercise, answer);
+    else if (currentExercise.kind === 'missing-number') evaluation = evaluateMissingNumberAnswer(currentExercise, answer);
+    else throw new Error(`Unsupported exercise kind: ${currentExercise.kind}`);
     if (!evaluation.correct) {
       incorrectAttempts += 1;
       feedback = incorrectAttempts === 1 ? 'Chưa đúng. Con thử nhìn hai phần một lần nữa nhé.' : 'Mình dùng một gợi ý nhỏ nhé.';
@@ -162,7 +183,7 @@
       id: `${activeSession.id}-attempt-${answered + 1}`,
       sessionId: activeSession.id,
       exerciseId: currentExercise.id,
-      module: 'B',
+      module: currentExercise.module,
       skillIds: currentExercise.skillIds,
       startedAt: now,
       completedAt: now,
@@ -193,7 +214,7 @@
     await repository.putSkillStates(nextStates);
     if (hintLevel === 0) independentCorrect += 1;
     answered += 1;
-    feedback = 'Đúng rồi! Con đã ghép được hai phần.';
+    feedback = 'Đúng rồi! Con đã tìm ra đáp án.';
     activeSession = {
       ...activeSession,
       attemptIds: [...activeSession.attemptIds, attempt.id],
@@ -211,7 +232,11 @@
   function showHint(): void {
     if (!currentExercise) return;
     hintLevel = hintLevel < 3 ? ((hintLevel + 1) as 1 | 2 | 3) : 3;
-    hint = numberBondHint(currentExercise, hintLevel);
+    if (currentExercise.kind === 'part-whole') hint = numberBondHint(currentExercise, hintLevel);
+    else if (currentExercise.kind === 'quantity') hint = quantityHint(currentExercise, hintLevel);
+    else if (currentExercise.kind === 'arithmetic') hint = arithmeticHint(currentExercise, hintLevel);
+    else if (currentExercise.kind === 'missing-number') hint = missingNumberHint(currentExercise, hintLevel);
+    else throw new Error(`Unsupported exercise kind: ${currentExercise.kind}`);
   }
 
   async function finishSession(): Promise<void> {
@@ -282,9 +307,17 @@
 </script>
 
 {#if route === 'home'}
-  <Home {profile} totalStars={rewards.totalStars} currentStreak={rewards.currentStreak} todayComplete={rewards.lastPracticeDate === localDateKey(Date.now())} onStartPractice={() => startSession('today')} onFreePractice={() => startSession('free-practice')} onOpenParent={() => navigate('parent-pin')} />
+  <Home {profile} totalStars={rewards.totalStars} currentStreak={rewards.currentStreak} todayComplete={rewards.lastPracticeDate === localDateKey(Date.now())} onStartPractice={() => startSession('today')} onFreePractice={() => navigate('free-practice')} onOpenParent={() => navigate('parent-pin')} />
+{:else if route === 'free-practice'}
+  <FreePractice onSelect={(module) => startSession('free-practice', module)} onHome={() => navigate('home')} />
 {:else if route === 'session' && currentExercise}
-  <NumberBondExercise exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+  {#if currentExercise.kind === 'part-whole'}
+    <NumberBondExercise exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+  {:else if currentExercise.kind === 'quantity'}
+    <QuantityPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+  {:else if currentExercise.kind === 'arithmetic' || currentExercise.kind === 'missing-number'}
+    <EquationPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+  {/if}
 {:else if route === 'summary'}
   <SessionSummary stars={summaryStars} onHome={() => navigate('home')} />
 {:else if route === 'parent-pin'}

@@ -15,6 +15,13 @@
 
   const bondState = $derived(skillStates.find((state) => state.skillId === 'B.bond.5'));
   const completedToday = $derived(sessions.some((session) => session.type === 'today' && session.completed));
+
+  function moduleStatus(module: string): string {
+    const states = skillStates.filter((state) => state.skillId.startsWith(`${module}.`));
+    if (states.length === 0) return 'Chưa bắt đầu';
+    if (states.some((state) => state.stage === 'stable')) return 'Đang vững';
+    return 'Đang học';
+  }
 </script>
 
 <main class="parent-dashboard page">
@@ -30,7 +37,10 @@
   <section class="dashboard-grid">
     <article><strong>{completedToday ? 'Đã xong' : 'Chưa học'}</strong><span>Bài học hôm nay</span></article>
     <article><strong>{rewards.currentStreak}</strong><span>Ngày liên tiếp</span></article>
+    <article><strong>{moduleStatus('A')}</strong><span>Nhìn nhanh số lượng</span></article>
     <article><strong>{bondState?.stage ?? 'Chưa bắt đầu'}</strong><span>Liên kết số 5</span></article>
+    <article><strong>{moduleStatus('C')}</strong><span>Tính nhẩm</span></article>
+    <article><strong>{moduleStatus('D')}</strong><span>Số còn thiếu</span></article>
   </section>
   <section class="parent-actions">
     <button class="secondary-action compact" type="button" onclick={onPracticeNow}>Luyện liên kết số</button>
