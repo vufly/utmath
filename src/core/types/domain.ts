@@ -47,6 +47,9 @@ export interface QuantityExercise extends ExerciseBase {
   kind: "quantity";
   quantity: number;
   answerMode: "numeral" | "frame" | "match";
+  layout: "dots" | "dice" | "domino" | "five-frame" | "ten-frame";
+  flashDurationMs?: number;
+  matchChoices?: number[];
 }
 
 export interface PartWholeExercise extends ExerciseBase {

@@ -4,7 +4,6 @@
   import { registerPwaUpdate } from './app/pwa/update';
   import { DEFAULT_PARENT_PIN, digestParentPin, verifyParentPin } from './app/state/parent-pin';
   import { defaultProfile } from './app/state/profile';
-  import { moduleBCurriculum } from './core/curriculum/module-b';
   import { planAdaptiveToday } from './core/adaptive/today';
   import { awardTodayReward, calculateSessionStars, localDateKey } from './core/gamification/rewards';
   import { createInitialSkillState, updateMastery } from './core/mastery/update';
@@ -78,7 +77,10 @@
     currentModule = module;
     currentExercise =
       module === 'A'
-        ? generateQuantityExercise({ seed })
+        ? generateQuantityExercise({
+            seed,
+            flashDurationMs: skillStates.find((state) => state.skillId === 'A.quantity.flash')?.score && skillStates.find((state) => state.skillId === 'A.quantity.flash')!.score >= 0.7 ? 800 : 1300,
+          })
         : module === 'B'
           ? generateNumberBondExercise({ seed, whole: 5, difficulty: answered > 4 ? 2 : 1 })
           : module === 'C'

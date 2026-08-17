@@ -32,10 +32,27 @@ describe("quantity exercises", () => {
     }
   });
 
+  it("covers bidirectional frames, flashes, and representation matching", () => {
+    const frame = generateQuantityExercise({
+      seed: 4,
+      stage: "number-to-frame",
+    });
+    const flash = generateQuantityExercise({ seed: 4, stage: "flash" });
+    const match = generateQuantityExercise({ seed: 4, stage: "match" });
+
+    expect(frame.answerMode).toBe("frame");
+    expect(frame.layout).toBe("five-frame");
+    expect(flash.flashDurationMs).toBeGreaterThanOrEqual(1000);
+    expect(match.answerMode).toBe("match");
+    expect(match.matchChoices).toContain(match.quantity);
+  });
+
   it("provides visual support before revealing answer", () => {
     const exercise = generateQuantityExercise({ seed: 1, quantity: 6 });
     expect(quantityHint(exercise, 1).type).toBe("text");
     expect(quantityHint(exercise, 2).type).toBe("visual");
-    expect(quantityHint(exercise, 3).payload).toBe("Có 6 chấm.");
+    expect(quantityHint(exercise, 3).payload).toBe(
+      "Có 5 chấm ở hàng trên và 1 chấm ở hàng dưới, là 6.",
+    );
   });
 });

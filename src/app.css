@@ -543,7 +543,8 @@ h2 {
 .quantity-frame.ten-frame {
   grid-template-columns: repeat(5, 1fr);
 }
-.quantity-frame > span {
+.quantity-frame > button,
+.quantity-match > span {
   align-items: center;
   aspect-ratio: 1;
   background: #dbeafe;
@@ -551,18 +552,75 @@ h2 {
   border-radius: 12px;
   display: flex;
   justify-content: center;
+  padding: 0;
 }
-.quantity-frame > span.empty-dot {
+.quantity-frame > button.empty-dot,
+.quantity-match > span.empty-dot {
   background: #fff;
 }
-.quantity-frame i {
+.quantity-frame i,
+.quantity-match i {
   background: #2563eb;
   border-radius: 50%;
   height: 22px;
   width: 22px;
 }
-.quantity-frame .empty-dot i {
+.quantity-frame .empty-dot i,
+.quantity-match .empty-dot i {
   display: none;
+}
+.quantity-frame button:disabled {
+  cursor: default;
+  opacity: 1;
+}
+.quantity-frame.dot-layout {
+  max-width: 240px;
+}
+.quantity-frame.dice-layout {
+  max-width: 220px;
+}
+.quantity-frame.domino-layout {
+  max-width: 330px;
+}
+.quantity-frame.selectable-frame button {
+  cursor: pointer;
+}
+.quantity-frame.selectable-frame button:hover,
+.quantity-frame.selectable-frame button[aria-pressed="true"] {
+  background: #d1fae5;
+}
+.quantity-selected,
+.flash-hidden {
+  color: #475569;
+  font-size: 1.125rem;
+  font-weight: 700;
+}
+.quantity-match-options {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(3, 1fr);
+  margin: 28px auto;
+  max-width: 580px;
+}
+.quantity-match {
+  background: #fff;
+  border: 2px solid #172554;
+  border-radius: 16px;
+  display: grid;
+  gap: 4px;
+  grid-template-columns: repeat(5, 1fr);
+  padding: 8px;
+}
+.quantity-match:hover {
+  background: #eff6ff;
+}
+.quantity-match > span {
+  border-width: 2px;
+  border-radius: 6px;
+}
+.quantity-match i {
+  height: 12px;
+  width: 12px;
 }
 .large-equation {
   color: #172554;
