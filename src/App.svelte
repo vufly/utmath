@@ -5,6 +5,7 @@
   import { DEFAULT_PARENT_PIN, digestParentPin, verifyParentPin } from './app/state/parent-pin';
   import { defaultProfile } from './app/state/profile';
   import { moduleBCurriculum } from './core/curriculum/module-b';
+  import { planAdaptiveToday } from './core/adaptive/today';
   import { awardTodayReward, calculateSessionStars, localDateKey } from './core/gamification/rewards';
   import { createInitialSkillState, updateMastery } from './core/mastery/update';
   import type { AppSettings, Attempt, Exercise, Hint, ModuleId, RewardState, SessionRecord, SkillState } from './core/types/domain';
@@ -12,6 +13,8 @@
   import { evaluateMissingNumberAnswer, generateMissingNumberExercise, missingNumberHint } from './exercises/missing-number/missing-number';
   import { generateNumberBondExercise, evaluateNumberBondAnswer, numberBondHint } from './exercises/number-bond/number-bond';
   import { evaluateQuantityAnswer, generateQuantityExercise, quantityHint } from './exercises/quantity/quantity';
+  import { evaluateStoryAnswer, generateStoryExercise, storyHint } from './exercises/story/story';
+  import { evaluateTriangleAnswer, generateTriangleExercise, triangleHint } from './exercises/triangle/triangle';
   import { migrateProgressExport } from './persistence/export-import/progress-export';
   import { IndexedDbProgressRepository } from './persistence/indexeddb/repository';
   import { defaultRewards, defaultSettings } from './persistence/repository';
@@ -21,6 +24,8 @@
   import EquationPractice from './ui/exercises/EquationPractice.svelte';
   import NumberBondExercise from './ui/exercises/NumberBondExercise.svelte';
   import QuantityPractice from './ui/exercises/QuantityPractice.svelte';
+  import StoryPractice from './ui/exercises/StoryPractice.svelte';
+  import TrianglePractice from './ui/exercises/TrianglePractice.svelte';
   import Backup from './ui/parent/Backup.svelte';
   import Dashboard from './ui/parent/Dashboard.svelte';
   import ParentPin from './ui/parent/ParentPin.svelte';
@@ -50,6 +55,8 @@
   let independentCorrect = 0;
   let currentExercise: Exercise | undefined;
   let currentModule: ModuleId = 'B';
+  let sessionModules: ModuleId[] = [];
+  let recentAttempts: Attempt[] = [];
   let feedback = '';
   let hint: Hint | undefined;
   let hintLevel: 0 | 1 | 2 | 3 = 0;
@@ -66,14 +73,20 @@
 
   function refreshExercise(): void {
     const seed = sessionSeed + answered;
+    const module = sessionModules[answered] ?? currentModule;
+    currentModule = module;
     currentExercise =
-      currentModule === 'A'
+      module === 'A'
         ? generateQuantityExercise({ seed })
-        : currentModule === 'B'
+        : module === 'B'
           ? generateNumberBondExercise({ seed, whole: 5, difficulty: answered > 4 ? 2 : 1 })
-          : currentModule === 'C'
+          : module === 'C'
             ? generateArithmeticExercise({ seed })
-            : generateMissingNumberExercise({ seed });
+            : module === 'D'
+              ? generateMissingNumberExercise({ seed })
+              : module === 'E'
+                ? generateStoryExercise({ seed })
+                : generateTriangleExercise({ seed });
     feedback = '';
     hint = undefined;
     hintLevel = 0;
@@ -82,18 +95,20 @@
 
   async function loadProgress(): Promise<void> {
     if (!repository) return;
-    const [savedProfile, savedSettings, savedRewards, savedStates, savedSessions] = await Promise.all([
+    const [savedProfile, savedSettings, savedRewards, savedStates, savedSessions, savedAttempts] = await Promise.all([
       repository.getProfile(),
       repository.getSettings(),
       repository.getRewards(),
       repository.getSkillStates(),
       repository.listSessions(),
+      repository.listAttempts({ limit: 30 }),
     ]);
     profile = { id: 'primary', displayName: savedProfile.displayName ?? 'Uyển Thanh' };
     settings = savedSettings;
     rewards = savedRewards;
     skillStates = savedStates;
     sessions = savedSessions;
+    recentAttempts = savedAttempts;
   }
 
   async function initialize(): Promise<void> {
@@ -147,6 +162,19 @@
     sessionTarget = type === 'free-practice' ? 10 : 16;
     sessionSeed = now;
     currentModule = module;
+    sessionModules =
+      type === 'today'
+        ? planAdaptiveToday({
+            skillStates,
+            recentAttempts,
+            parentOverrides: {
+              focusedSkillIds: skillStates.filter((state) => state.parentFocus).map((state) => state.skillId),
+              pausedSkillIds: skillStates.filter((state) => state.parentPaused).map((state) => state.skillId),
+              manuallyUnlockedSkillIds: skillStates.filter((state) => state.manuallyUnlocked).map((state) => state.skillId),
+            },
+            slotCount: 16,
+          })
+        : Array.from({ length: 10 }, () => module);
     answered = 0;
     independentCorrect = 0;
     activeSession = {
@@ -154,7 +182,7 @@
       type,
       startedAt: now,
       attemptIds: [],
-      plannedSkillIds: [`${module}.start`],
+      plannedSkillIds: sessionModules.map((plannedModule) => `${plannedModule}.start`),
       practicedSkillIds: [],
       completed: false,
     };
@@ -170,7 +198,9 @@
     else if (currentExercise.kind === 'quantity') evaluation = evaluateQuantityAnswer(currentExercise, answer);
     else if (currentExercise.kind === 'arithmetic') evaluation = evaluateArithmeticAnswer(currentExercise, answer);
     else if (currentExercise.kind === 'missing-number') evaluation = evaluateMissingNumberAnswer(currentExercise, answer);
-    else throw new Error(`Unsupported exercise kind: ${currentExercise.kind}`);
+    else if (currentExercise.kind === 'story') evaluation = evaluateStoryAnswer(currentExercise, answer);
+    else if (currentExercise.kind === 'triangle') evaluation = evaluateTriangleAnswer(currentExercise, answer);
+    else throw new Error('Unsupported exercise kind.');
     if (!evaluation.correct) {
       incorrectAttempts += 1;
       feedback = incorrectAttempts === 1 ? 'Chưa đúng. Con thử nhìn hai phần một lần nữa nhé.' : 'Mình dùng một gợi ý nhỏ nhé.';
@@ -236,7 +266,9 @@
     else if (currentExercise.kind === 'quantity') hint = quantityHint(currentExercise, hintLevel);
     else if (currentExercise.kind === 'arithmetic') hint = arithmeticHint(currentExercise, hintLevel);
     else if (currentExercise.kind === 'missing-number') hint = missingNumberHint(currentExercise, hintLevel);
-    else throw new Error(`Unsupported exercise kind: ${currentExercise.kind}`);
+    else if (currentExercise.kind === 'story') hint = storyHint(currentExercise, hintLevel);
+    else if (currentExercise.kind === 'triangle') hint = triangleHint(currentExercise, hintLevel);
+    else throw new Error('Unsupported exercise kind.');
   }
 
   async function finishSession(): Promise<void> {
@@ -317,6 +349,10 @@
     <QuantityPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
   {:else if currentExercise.kind === 'arithmetic' || currentExercise.kind === 'missing-number'}
     <EquationPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+  {:else if currentExercise.kind === 'story'}
+    <StoryPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+  {:else if currentExercise.kind === 'triangle'}
+    <TrianglePractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
   {/if}
 {:else if route === 'summary'}
   <SessionSummary stars={summaryStars} onHome={() => navigate('home')} />

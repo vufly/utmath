@@ -571,6 +571,32 @@ h2 {
   letter-spacing: 0.02em;
   margin: 44px 0;
 }
+.story-birds {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  justify-content: center;
+  margin: 28px auto;
+  max-width: 420px;
+}
+.story-birds .bird {
+  height: 44px;
+  width: 58px;
+}
+.story-birds .arriving-bird {
+  transform: translateY(-8px);
+}
+.story-birds .departing-bird {
+  opacity: 0.72;
+  transform: translate(12px, -12px);
+}
+.triangle-figure {
+  display: block;
+  margin: 22px auto;
+  max-height: 290px;
+  max-width: 290px;
+  width: 100%;
+}
 
 .modal-backdrop {
   align-items: center;

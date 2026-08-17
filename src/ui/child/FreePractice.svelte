@@ -8,6 +8,8 @@
     { id: "B", title: "Liên kết số", detail: "Hai phần tạo thành một số", symbol: "⌁" },
     { id: "C", title: "Tính nhẩm", detail: "Cộng và trừ trong 10", symbol: "+" },
     { id: "D", title: "Số còn thiếu", detail: "Tìm số trong phép tính", symbol: "?" },
+    { id: "E", title: "Toán tranh", detail: "Nhìn tranh và tính", symbol: "▣" },
+    { id: "F", title: "Đếm tam giác", detail: "Tìm mọi tam giác", symbol: "△" },
   ];
 </script>
 
