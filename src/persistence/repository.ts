@@ -26,6 +26,7 @@ export interface ProgressRepository {
   listSessions(): Promise<SessionRecord[]>;
   getRewards(): Promise<RewardState>;
   saveRewards(rewards: RewardState): Promise<void>;
+  resetProgress(): Promise<void>;
   exportAll(): Promise<ProgressExport>;
   importAll(data: ProgressExport): Promise<void>;
 }

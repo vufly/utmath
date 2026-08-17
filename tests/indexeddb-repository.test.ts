@@ -120,4 +120,47 @@ describe("IndexedDbProgressRepository", () => {
       displayName: "After",
     });
   });
+
+  it("resets learning evidence while retaining profile and settings", async () => {
+    const repository = await createRepository();
+    await repository.saveProfile({
+      id: "primary",
+      displayName: "Uyển Thanh",
+      createdAt: 1,
+    });
+    await repository.saveSettings({
+      parentPinHash: "digest",
+      reducedMotion: true,
+      dailyTargetMin: 15,
+      showStreak: false,
+      showStars: false,
+      locale: "vi-VN",
+    });
+    await repository.putSkillStates([skill]);
+    await repository.saveSession(session);
+    await repository.addAttempt(attempt("attempt-1", 200));
+    await repository.saveRewards({
+      totalStars: 3,
+      currentStreak: 2,
+      bestStreak: 4,
+    });
+
+    await repository.resetProgress();
+
+    await expect(repository.getSkillStates()).resolves.toEqual([]);
+    await expect(repository.listSessions()).resolves.toEqual([]);
+    await expect(repository.listAttempts()).resolves.toEqual([]);
+    await expect(repository.getRewards()).resolves.toEqual({
+      totalStars: 0,
+      currentStreak: 0,
+      bestStreak: 0,
+    });
+    await expect(repository.getProfile()).resolves.toMatchObject({
+      displayName: "Uyển Thanh",
+    });
+    await expect(repository.getSettings()).resolves.toMatchObject({
+      parentPinHash: "digest",
+      dailyTargetMin: 15,
+    });
+  });
 });

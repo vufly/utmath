@@ -44,6 +44,7 @@
   let backupMessage = '';
   let showUpdate = false;
   let showChangePin = false;
+  let showResetProgress = false;
   let newPin = '';
   let confirmPin = '';
   let changePinError = '';
@@ -306,6 +307,15 @@
     await repository.putSkillStates(skillStates);
   }
 
+  async function resetProgress(): Promise<void> {
+    if (!repository) return;
+    await repository.resetProgress();
+    activeSession = undefined;
+    currentExercise = undefined;
+    await loadProgress();
+    showResetProgress = false;
+  }
+
   async function exportProgress(): Promise<void> {
     if (!repository) return;
     const data = await repository.exportAll();
@@ -359,7 +369,7 @@
 {:else if route === 'parent-pin'}
   <ParentPin error={pinError} onSubmit={openParent} onHome={() => navigate('home')} />
 {:else if route === 'parent-dashboard'}
-  <Dashboard {rewards} {sessions} {skillStates} onHome={() => navigate('home')} onChangePin={() => (showChangePin = true)} onPracticeNow={() => startSession('parent-practice')} onBackup={() => navigate('backup')} onToggleFocus={() => toggleBondState('parentFocus')} onTogglePause={() => toggleBondState('parentPaused')} />
+  <Dashboard {rewards} {sessions} {skillStates} onHome={() => navigate('home')} onChangePin={() => (showChangePin = true)} onPracticeNow={() => startSession('parent-practice')} onBackup={() => navigate('backup')} onToggleFocus={() => toggleBondState('parentFocus')} onTogglePause={() => toggleBondState('parentPaused')} onResetProgress={() => (showResetProgress = true)} />
 {:else if route === 'backup'}
   <Backup message={backupMessage} onExport={exportProgress} onImport={importProgress} onBack={() => navigate('parent-dashboard')} />
 {:else}
@@ -377,6 +387,13 @@
     <label>Nhập lại mã PIN<input bind:value={confirmPin} inputmode="numeric" maxlength="4" pattern="[0-9]{4}" type="password" /></label>
     {#if changePinError}<p class="form-error" role="alert">{changePinError}</p>{/if}
     <button class="primary-action compact" type="button" onclick={saveNewPin}>Lưu mã PIN</button>
+  </Modal>
+{/if}
+
+{#if showResetProgress}
+  <Modal title="Đặt lại tiến độ" onClose={() => (showResetProgress = false)}>
+    <p class="modal-intro">Thao tác này xóa lịch sử bài học, mức thành thạo và ngôi sao. Tên của Uyển Thanh, mã PIN và cài đặt vẫn được giữ lại.</p>
+    <button class="primary-action compact" type="button" onclick={resetProgress}>Xóa tiến độ học</button>
   </Modal>
 {/if}
 

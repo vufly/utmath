@@ -1,7 +1,7 @@
 <script lang="ts">
   import type { RewardState, SessionRecord, SkillState } from '../../core/types/domain';
 
-  let { rewards, sessions, skillStates, onHome, onChangePin, onPracticeNow, onBackup, onToggleFocus, onTogglePause }: {
+  let { rewards, sessions, skillStates, onHome, onChangePin, onPracticeNow, onBackup, onToggleFocus, onTogglePause, onResetProgress }: {
     rewards: RewardState;
     sessions: SessionRecord[];
     skillStates: SkillState[];
@@ -11,6 +11,7 @@
     onBackup: () => void;
     onToggleFocus: () => void;
     onTogglePause: () => void;
+    onResetProgress: () => void;
   } = $props();
 
   const bondState = $derived(skillStates.find((state) => state.skillId === 'B.bond.5'));
@@ -47,5 +48,6 @@
     <button class="secondary-action compact" type="button" onclick={onToggleFocus}>{bondState?.parentFocus ? 'Bỏ tập trung' : 'Tập trung số 5'}</button>
     <button class="secondary-action compact" type="button" onclick={onTogglePause}>{bondState?.parentPaused ? 'Bỏ tạm dừng' : 'Tạm dừng số 5'}</button>
     <button class="secondary-action compact" type="button" onclick={onChangePin}>Đổi mã PIN</button>
+    <button class="quiet-button compact" type="button" onclick={onResetProgress}>Đặt lại tiến độ</button>
   </section>
 </main>

@@ -124,6 +124,27 @@ export class IndexedDbProgressRepository implements ProgressRepository {
     } satisfies StoredRewards);
   }
 
+  async resetProgress(): Promise<void> {
+    const database = await this.database;
+    const transaction = database.transaction(
+      [
+        storeNames.skills,
+        storeNames.attempts,
+        storeNames.sessions,
+        storeNames.rewards,
+      ],
+      "readwrite",
+    );
+    transaction.objectStore(storeNames.skills).clear();
+    transaction.objectStore(storeNames.attempts).clear();
+    transaction.objectStore(storeNames.sessions).clear();
+    transaction.objectStore(storeNames.rewards).put({
+      id: "primary",
+      data: defaultRewards,
+    } satisfies StoredRewards);
+    await transactionToPromise(transaction);
+  }
+
   async exportAll(): Promise<ProgressExport> {
     const [profile, settings, skillStates, sessions, attempts, rewards] =
       await Promise.all([
