@@ -26,4 +26,31 @@ describe("picture story exercises", () => {
       `Đáp án là ${storyAnswer(exercise)}.`,
     );
   });
+
+  it("supports all semantic story stages and story types", () => {
+    const direction = generateStoryExercise({ seed: 3, stage: "direction" });
+    const operator = generateStoryExercise({ seed: 3, stage: "operator" });
+    const build = generateStoryExercise({ seed: 3, stage: "build" });
+    const missing = generateStoryExercise({
+      seed: 3,
+      storyType: "missing-part",
+    });
+
+    expect(evaluateStoryAnswer(direction, "increase").correct).toBe(
+      direction.storyType !== "take-away",
+    );
+    expect(
+      evaluateStoryAnswer(
+        operator,
+        operator.storyType === "take-away" ? "-" : "+",
+      ).correct,
+    ).toBe(true);
+    expect(
+      evaluateStoryAnswer(
+        build,
+        `${build.startCount}${build.storyType === "take-away" ? "-" : "+"}${build.changeCount}=${build.total}`,
+      ).correct,
+    ).toBe(true);
+    expect(storyAnswer(missing)).toBe(missing.changeCount);
+  });
 });

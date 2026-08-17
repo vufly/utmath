@@ -83,6 +83,15 @@ export interface MissingNumberExercise extends ExerciseBase {
 export interface StoryExercise extends ExerciseBase {
   kind: "story";
   storyType: "add-to" | "take-away" | "combine" | "missing-part";
+  stage:
+    | "direction"
+    | "before-after"
+    | "parts-whole"
+    | "operator"
+    | "numbers"
+    | "equation-choice"
+    | "build"
+    | "result";
   objectKind: string;
   startCount?: number;
   changeCount?: number;

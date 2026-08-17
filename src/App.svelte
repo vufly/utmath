@@ -12,7 +12,7 @@
   import { evaluateMissingNumberAnswer, generateMissingNumberExercise, missingNumberHint } from './exercises/missing-number/missing-number';
   import { generateNumberBondExercise, evaluateNumberBondAnswer, numberBondHint } from './exercises/number-bond/number-bond';
   import { evaluateQuantityAnswer, generateQuantityExercise, quantityHint } from './exercises/quantity/quantity';
-  import { evaluateStoryAnswer, generateStoryExercise, storyHint } from './exercises/story/story';
+  import { evaluateStoryAnswer, generateStoryExercise, storyHint, type StoryStage } from './exercises/story/story';
   import { evaluateTriangleAnswer, generateTriangleExercise, triangleHint } from './exercises/triangle/triangle';
   import { migrateProgressExport } from './persistence/export-import/progress-export';
   import { IndexedDbProgressRepository } from './persistence/indexeddb/repository';
@@ -92,7 +92,7 @@
             : module === 'D'
               ? generateMissingNumberExercise({ seed, form: ['add-result', 'add-second', 'add-first', 'sub-result', 'sub-removed', 'sub-start'][answered % 6] as 'add-result' | 'add-second' | 'add-first' | 'sub-result' | 'sub-removed' | 'sub-start' })
               : module === 'E'
-                ? generateStoryExercise({ seed })
+                ? generateStoryExercise({ seed, stage: ['direction', 'before-after', 'parts-whole', 'operator', 'numbers', 'equation-choice', 'build', 'result'][answered % 8] as StoryStage })
                 : generateTriangleExercise({ seed });
     feedback = '';
     hint = undefined;
@@ -198,7 +198,7 @@
     navigate('session');
   }
 
-  async function answerExercise(answer: number): Promise<void> {
+  async function answerExercise(answer: unknown): Promise<void> {
     if (!repository || !activeSession || !currentExercise) return;
     let evaluation;
     if (currentExercise.kind === 'part-whole') evaluation = evaluateNumberBondAnswer(currentExercise, answer);

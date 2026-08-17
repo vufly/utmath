@@ -6,45 +6,65 @@ import type {
   StoryExercise,
 } from "../../core/types/domain";
 
+export type StoryStage = StoryExercise["stage"];
+
+const stages: StoryStage[] = [
+  "direction",
+  "before-after",
+  "parts-whole",
+  "operator",
+  "numbers",
+  "equation-choice",
+  "build",
+  "result",
+];
+
 export function generateStoryExercise(options: {
   seed: number;
-  storyType?: "add-to" | "take-away";
+  storyType?: StoryExercise["storyType"];
+  stage?: StoryStage;
 }): StoryExercise {
   const random = createSeededRandom(options.seed);
   const storyType =
-    options.storyType ?? random.pick(["add-to", "take-away"] as const);
+    options.storyType ??
+    random.pick(["add-to", "take-away", "combine", "missing-part"] as const);
+  const stage = options.stage ?? "result";
   const objectKind = random.pick(["apple", "fish", "bird"] as const);
-  const startCount =
-    storyType === "add-to" ? random.int(1, 7) : random.int(3, 10);
-  const changeCount =
-    storyType === "add-to"
-      ? random.int(1, 10 - startCount)
-      : random.int(1, startCount);
-  const total =
-    storyType === "add-to"
-      ? startCount + changeCount
-      : startCount - changeCount;
+  const isAdding = storyType !== "take-away";
+  const startCount = isAdding ? random.int(1, 7) : random.int(3, 10);
+  const changeCount = isAdding
+    ? random.int(1, 10 - startCount)
+    : random.int(1, startCount);
+  const total = isAdding ? startCount + changeCount : startCount - changeCount;
 
   return {
     id: `story-${options.seed}`,
     kind: "story",
     module: "E",
-    skillIds: [storyType === "add-to" ? "E.add.add-to" : "E.sub.take-away"],
-    difficulty: 1,
+    skillIds: [`E.stage.${stage}`, `E.story.${storyType}`],
+    difficulty: stages.indexOf(stage) + 1,
     representation: "object-scene",
-    promptKey: "story.find-result",
+    promptKey: `story.${stage}`,
     generator: {
       generatorId: "picture-story",
-      generatorVersion: 1,
+      generatorVersion: 2,
       seed: options.seed,
-      params: { storyType, objectKind, startCount, changeCount, total },
+      params: { storyType, stage, objectKind, startCount, changeCount, total },
     },
     storyType,
+    stage,
     objectKind,
     startCount,
     changeCount,
     total,
-    unknown: "result",
+    unknown:
+      stage === "operator"
+        ? "operator"
+        : stage === "numbers"
+          ? "number-a"
+          : stage === "equation-choice"
+            ? "full-equation"
+            : "result",
   };
 }
 
@@ -52,19 +72,50 @@ export function storyAnswer(exercise: StoryExercise): number {
   const total = exercise.generator?.params.total;
   if (typeof total !== "number")
     throw new Error("Story generator data is invalid.");
-  return total;
+  return exercise.storyType === "missing-part"
+    ? (exercise.changeCount ?? total)
+    : total;
+}
+
+function operatorFor(exercise: StoryExercise): "+" | "-" {
+  return exercise.storyType === "take-away" ? "-" : "+";
+}
+
+function equationFor(exercise: StoryExercise): string {
+  return `${exercise.startCount}${operatorFor(exercise)}${exercise.changeCount}=${exercise.total}`;
+}
+
+function expectedStoryAnswer(exercise: StoryExercise): unknown {
+  if (exercise.stage === "direction" || exercise.stage === "before-after")
+    return operatorFor(exercise) === "+" ? "increase" : "decrease";
+  if (exercise.stage === "operator") return operatorFor(exercise);
+  if (exercise.stage === "numbers")
+    return `${exercise.startCount},${exercise.changeCount}`;
+  if (exercise.stage === "equation-choice" || exercise.stage === "build")
+    return equationFor(exercise);
+  if (exercise.stage === "parts-whole") return exercise.total;
+  return storyAnswer(exercise);
 }
 
 export function evaluateStoryAnswer(
   exercise: StoryExercise,
   answer: unknown,
 ): EvaluationResult {
-  const normalizedAnswer = typeof answer === "number" ? answer : Number(answer);
-  const correct = normalizedAnswer === storyAnswer(exercise);
+  const normalizedAnswer = typeof answer === "number" ? answer : String(answer);
+  const correct = normalizedAnswer === expectedStoryAnswer(exercise);
   return {
     correct,
     normalizedAnswer,
-    errorCode: correct ? undefined : "arithmetic-error",
+    errorCode: correct
+      ? undefined
+      : exercise.stage === "operator" || exercise.stage === "direction"
+        ? "wrong-operator"
+        : exercise.stage === "build" &&
+            String(answer)
+              .split(/[+=-]/)
+              .every((item) => !Number.isNaN(Number(item)))
+          ? "arithmetic-error"
+          : "other",
     evidence: exercise.skillIds.map((skillId) => ({
       skillId,
       weight: correct ? 1 : -0.3,
@@ -80,7 +131,7 @@ export function storyHint(exercise: StoryExercise, level: HintLevel): Hint {
       level,
       type: "text",
       payload:
-        exercise.storyType === "add-to"
+        operatorFor(exercise) === "+"
           ? "Có thêm vào, vậy số lượng tăng lên."
           : "Có bớt đi, vậy số lượng giảm xuống.",
     };
@@ -89,6 +140,6 @@ export function storyHint(exercise: StoryExercise, level: HintLevel): Hint {
   return {
     level,
     type: "text",
-    payload: `Đáp án là ${storyAnswer(exercise)}.`,
+    payload: `Đáp án là ${expectedStoryAnswer(exercise)}.`,
   };
 }

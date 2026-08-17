@@ -754,6 +754,47 @@ h2 {
   opacity: 0.72;
   transform: translate(12px, -12px);
 }
+.story-choice-grid {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(2, 1fr);
+  margin-top: 12px;
+}
+.story-choice-grid button,
+.equation-builder button {
+  background: #fff;
+  border: 2px solid #172554;
+  border-radius: 14px;
+  color: #172554;
+  font-size: 1.125rem;
+  font-weight: 700;
+  min-height: 52px;
+  padding: 8px;
+}
+.story-choice-grid button:hover,
+.equation-builder button:hover,
+.equation-builder button.selected-build {
+  background: #dbeafe;
+}
+.equation-builder {
+  display: grid;
+  gap: 10px;
+  grid-template-columns: repeat(4, 1fr);
+  margin: 12px 0;
+}
+.equation-builder div {
+  display: grid;
+  gap: 6px;
+}
+.equation-builder strong {
+  color: #475569;
+  font-size: 0.875rem;
+}
+@media (max-width: 560px) {
+  .equation-builder {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 .triangle-figure {
   display: block;
   margin: 22px auto;
