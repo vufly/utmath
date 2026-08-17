@@ -105,6 +105,7 @@ export interface TriangleExercise extends ExerciseBase {
   kind: "triangle";
   definitionId: string;
   answerMode: "select" | "count";
+  stage: "select" | "independent";
 }
 
 export type Exercise =

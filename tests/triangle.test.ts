@@ -14,7 +14,7 @@ describe("authored triangle exercises", () => {
         seed: 1,
         definitionId: definition.id,
       });
-      expect(triangleAnswer(exercise)).toBe(definition.validTriangleIds.length);
+      expect(triangleAnswer(exercise)).toBe(definition.validTriangles.length);
       expect(
         evaluateTriangleAnswer(exercise, triangleAnswer(exercise)).correct,
       ).toBe(true);
@@ -24,9 +24,22 @@ describe("authored triangle exercises", () => {
   it("teaches systematic search before answer", () => {
     const exercise = generateTriangleExercise({ seed: 0 });
     expect(triangleHint(exercise, 1).payload).toContain("nhỏ");
-    expect(triangleHint(exercise, 2).type).toBe("visual");
-    expect(triangleHint(exercise, 3).payload).toBe(
-      `Có tất cả ${triangleAnswer(exercise)} tam giác.`,
-    );
+    expect(triangleHint(exercise, 2).payload).toContain("ghép");
+    expect(triangleHint(exercise, 3).type).toBe("visual");
+  });
+
+  it("keeps worksheet-style composite counts authored explicitly", () => {
+    const exercise = generateTriangleExercise({
+      seed: 1,
+      definitionId: "rectangle-composites",
+    });
+
+    expect(triangleAnswer(exercise)).toBe(8);
+    expect(
+      evaluateTriangleAnswer(exercise, {
+        count: 7,
+        selectedIds: ["top", "right", "bottom", "left"],
+      }).errorCode,
+    ).toBe("missed-composite-triangle");
   });
 });

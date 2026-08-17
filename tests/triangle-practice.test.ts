@@ -28,6 +28,29 @@ describe("TrianglePractice", () => {
 
     expect(screen.getByText("3")).toBeInTheDocument();
     await fireEvent.click(screen.getByRole("button", { name: "Kiểm tra" }));
-    expect(onAnswer).toHaveBeenCalledWith(3);
+    expect(onAnswer).toHaveBeenCalledWith({
+      count: 3,
+      selectedIds: ["left", "middle", "right"],
+    });
+  });
+
+  it("switches size filters so composite triangles remain tappable", async () => {
+    const exercise = generateTriangleExercise({
+      seed: 1,
+      definitionId: "rectangle-composites",
+    });
+    const { container } = render(TrianglePractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(container.querySelectorAll("polygon")).toHaveLength(4);
+    await fireEvent.click(screen.getByRole("button", { name: "Lớn" }));
+    expect(container.querySelectorAll("polygon")).toHaveLength(4);
+    expect(
+      screen.getAllByRole("button", { name: "Chọn tam giác large" }),
+    ).toHaveLength(4);
   });
 });

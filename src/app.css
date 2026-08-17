@@ -812,6 +812,29 @@ h2 {
   fill: rgb(251 191 36 / 45%);
   stroke: #d97706;
 }
+.triangle-figure polygon.hint-region {
+  fill: rgb(96 165 250 / 20%);
+  stroke: #2563eb;
+  stroke-dasharray: 8 5;
+}
+.triangle-size-controls {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  margin-top: 12px;
+}
+.triangle-size-controls button {
+  background: #fff;
+  border: 2px solid #172554;
+  border-radius: 12px;
+  color: #172554;
+  font-weight: 700;
+  min-height: 42px;
+  min-width: 70px;
+}
+.triangle-size-controls button.active-size {
+  background: #dbeafe;
+}
 .triangle-count {
   color: #475569;
   font-size: 1.125rem;
