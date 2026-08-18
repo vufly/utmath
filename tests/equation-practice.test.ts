@@ -29,5 +29,6 @@ describe("EquationPractice", () => {
       ),
     ).toBeInTheDocument();
     expect(document.querySelectorAll(".step-arc")).toHaveLength(2);
+    expect(document.querySelector(".line-end")).not.toBeInTheDocument();
   });
 });

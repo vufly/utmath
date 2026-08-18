@@ -538,7 +538,6 @@ h2 {
 }
 .strategy-number-line span {
   align-items: center;
-  border-bottom: 4px solid #94a3b8;
   color: #475569;
   display: flex;
   font-weight: 700;
@@ -551,9 +550,10 @@ h2 {
   color: #2563eb;
   height: 18px;
   left: 55%;
+  overflow: visible;
   pointer-events: none;
   position: absolute;
-  top: 27px;
+  top: 29px;
   width: 100%;
   z-index: 1;
 }
@@ -571,12 +571,6 @@ h2 {
   border: 2px solid #2563eb;
   border-radius: 8px;
   color: #1d4ed8;
-}
-.strategy-number-line span.line-end {
-  background: #d1fae5;
-  border: 2px solid #047857;
-  border-radius: 8px;
-  color: #065f46;
 }
 .number-line-instruction {
   color: #1e3a8a;
