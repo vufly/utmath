@@ -264,17 +264,38 @@
     await repository.saveSession(activeSession);
 
     if (answered >= sessionTarget) {
-      if (currentExercise.kind === 'part-whole') return;
+      if (
+        currentExercise.kind === 'part-whole' ||
+        currentExercise.kind === 'arithmetic'
+      )
+        return;
       await finishSession();
       return;
     }
-    if (currentExercise.kind === 'part-whole') return;
+    if (
+      currentExercise.kind === 'part-whole' ||
+      currentExercise.kind === 'arithmetic'
+    )
+      return;
     window.setTimeout(refreshExercise, 450);
   }
 
   async function continueNumberBond(): Promise<void> {
     if (
       currentExercise?.kind !== 'part-whole' ||
+      !feedback.includes('Đúng')
+    )
+      return;
+    if (answered >= sessionTarget) {
+      await finishSession();
+      return;
+    }
+    refreshExercise();
+  }
+
+  async function continueArithmetic(): Promise<void> {
+    if (
+      currentExercise?.kind !== 'arithmetic' ||
       !feedback.includes('Đúng')
     )
       return;
@@ -383,7 +404,7 @@
   {:else if currentExercise.kind === 'quantity'}
     <QuantityPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
   {:else if currentExercise.kind === 'arithmetic' || currentExercise.kind === 'missing-number'}
-    <EquationPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+    <EquationPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} onNext={continueArithmetic} />
   {:else if currentExercise.kind === 'story'}
     <StoryPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
   {:else if currentExercise.kind === 'triangle'}

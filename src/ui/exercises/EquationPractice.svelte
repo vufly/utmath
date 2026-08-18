@@ -5,20 +5,24 @@
     MissingNumberExercise,
   } from "../../core/types/domain";
 
-  let { exercise, feedback = "", hint, answered, onAnswer, onHint }: {
+  let { exercise, feedback = "", hint, answered, onAnswer, onHint, onNext = () => {} }: {
     exercise: ArithmeticExercise | MissingNumberExercise;
     feedback?: string;
     hint?: Hint;
     answered: number;
     onAnswer: (answer: number) => void;
     onHint: () => void;
+    onNext?: () => void;
   } = $props();
 
   const operator = $derived(exercise.operation === "add" ? "+" : "−");
   const equation = $derived(
     exercise.kind === "arithmetic"
-      ? `${exercise.left} ${operator} ${exercise.right} = ?`
+      ? `${exercise.left} ${operator} ${exercise.right} = ${feedback.includes("Đúng") ? exercise.result : "?"}`
       : `${exercise.left ?? "?"} ${operator} ${exercise.right ?? "?"} = ${exercise.result ?? "?"}`,
+  );
+  const arithmeticComplete = $derived(
+    exercise.kind === "arithmetic" && feedback.includes("Đúng"),
   );
   const numberLineStart = $derived(
     exercise.kind === "arithmetic" && exercise.operation === "add"
@@ -109,5 +113,5 @@
     {/if}
     {#if feedback}<p class:success={feedback.includes("Đúng")} class="answer-feedback" role="status">{feedback}</p>{/if}
   </section>
-  <section class="answer-panel" aria-label="Chọn câu trả lời"><button class="hint-button" type="button" onclick={onHint}>Gợi ý</button><div class="number-grid">{#each Array(11) as _, value}<button type="button" onclick={() => onAnswer(value)}>{value}</button>{/each}</div></section>
+  <section class="answer-panel" aria-label="Chọn câu trả lời">{#if arithmeticComplete}<button class="primary-action compact" type="button" onclick={onNext}>Tiếp tục</button>{:else}<button class="hint-button" type="button" onclick={onHint}>Gợi ý</button><div class="number-grid">{#each Array(11) as _, value}<button type="button" onclick={() => onAnswer(value)}>{value}</button>{/each}</div>{/if}</section>
 </main>
