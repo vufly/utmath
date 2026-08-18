@@ -165,6 +165,25 @@ export function quantityHint(
   exercise: QuantityExercise,
   level: HintLevel,
 ): Hint {
+  if (exercise.answerMode === "frame") {
+    if (level === 1)
+      return {
+        level,
+        type: "interaction",
+        payload: `Con chạm vào các ô trống để đặt đủ ${exercise.quantity} chấm nhé.`,
+      };
+    if (level === 2)
+      return {
+        level,
+        type: "text",
+        payload: `Con nhìn số ô trống, rồi đặt chấm cho đủ ${exercise.quantity}.`,
+      };
+    return {
+      level,
+      type: "text",
+      payload: `Con cần đặt ${exercise.quantity} chấm.`,
+    };
+  }
   if (level === 1)
     return {
       level,

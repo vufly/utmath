@@ -55,4 +55,17 @@ describe("quantity exercises", () => {
       "Có 5 chấm ở hàng trên và 1 chấm ở hàng dưới, là 6.",
     );
   });
+
+  it("uses interaction-specific hints while filling a frame", () => {
+    const exercise = generateQuantityExercise({
+      seed: 1,
+      quantity: 5,
+      stage: "number-to-frame",
+    });
+
+    expect(quantityHint(exercise, 1).payload).toBe(
+      "Con chạm vào các ô trống để đặt đủ 5 chấm nhé.",
+    );
+    expect(quantityHint(exercise, 3).payload).toBe("Con cần đặt 5 chấm.");
+  });
 });
