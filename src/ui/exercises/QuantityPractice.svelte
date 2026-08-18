@@ -11,11 +11,14 @@
   } = $props();
 
   let selectedCells = $state<number[]>([]);
-  let flashVisible = $state(true);
+  let flashVisible = $state(false);
 
   const cellCount = $derived(exercise.layout === "dots" ? exercise.quantity : exercise.layout === "dice" ? 9 : exercise.layout === "domino" ? 10 : exercise.layout === "five-frame" ? 5 : 10);
   const columns = $derived(exercise.layout === "dots" ? Math.min(exercise.quantity, 3) : exercise.layout === "dice" ? 3 : exercise.layout === "domino" ? 5 : 5);
   const selectedCount = $derived(selectedCells.length);
+  const showRepresentation = $derived(
+    !exercise.flashDurationMs || flashVisible,
+  );
 
   function isFilled(index: number, quantity = exercise.quantity, layout = exercise.layout): boolean {
     if (layout === "dice") {
@@ -45,7 +48,7 @@
   $effect(() => {
     const exerciseId = exercise.id;
     selectedCells = [];
-    flashVisible = true;
+    flashVisible = Boolean(exercise.flashDurationMs);
     if (!exercise.flashDurationMs) return;
     const timer = window.setTimeout(() => {
       if (exercise.id === exerciseId) flashVisible = false;
@@ -58,7 +61,7 @@
   <header class="exercise-header"><span>Bài {answered + 1}</span><span>{answered} bài đã làm</span></header>
   <section class="exercise-card" aria-labelledby="quantity-title">
     <p class="eyebrow">Nhìn nhanh số lượng</p>
-    <h1 id="quantity-title">{exercise.answerMode === "frame" ? `Đặt ${exercise.quantity} chấm vào khung` : exercise.answerMode === "match" ? `Tìm hình có ${exercise.quantity} chấm` : flashVisible ? "Nhìn thật nhanh nhé" : "Có bao nhiêu chấm?"}</h1>
+    <h1 id="quantity-title">{exercise.answerMode === "frame" ? `Đặt ${exercise.quantity} chấm vào khung` : exercise.answerMode === "match" ? `Tìm hình có ${exercise.quantity} chấm` : exercise.flashDurationMs && flashVisible ? "Nhìn thật nhanh nhé" : "Có bao nhiêu chấm?"}</h1>
     {#if exercise.answerMode === "match"}
       <div class="quantity-match-options" aria-label="Chọn hình đúng">
         {#each exercise.matchChoices ?? [] as choice}
@@ -67,7 +70,7 @@
           </button>
         {/each}
       </div>
-    {:else if flashVisible}
+    {:else if showRepresentation}
       <div class:ten-frame={exercise.layout === "ten-frame"} class:dot-layout={exercise.layout === "dots"} class:dice-layout={exercise.layout === "dice"} class:domino-layout={exercise.layout === "domino"} class:selectable-frame={exercise.answerMode === "frame"} class="quantity-frame" style={`--frame-columns: ${columns}`} aria-label={`${exercise.quantity} chấm`}>
         {#each Array(cellCount) as _, index}
           <button class:empty-dot={exercise.answerMode === "frame" ? !selectedCells.includes(index) : !isFilled(index)} type="button" aria-label={exercise.answerMode === "frame" ? `Ô ${index + 1}` : undefined} aria-pressed={exercise.answerMode === "frame" ? selectedCells.includes(index) : undefined} disabled={exercise.answerMode !== "frame"} onclick={() => toggleCell(index)}><i></i></button>

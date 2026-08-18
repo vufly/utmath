@@ -188,7 +188,16 @@ export function quantityHint(
     return {
       level,
       type: "text",
-      payload: "Con thử nhìn theo nhóm, không cần đếm vội nhé.",
+      payload:
+        exercise.layout === "dice"
+          ? "Con nhìn 4 chấm ở góc và chấm ở giữa nhé."
+          : exercise.layout === "domino"
+            ? "Con nhìn từng nửa của quân đô-mi-nô nhé."
+            : exercise.layout === "five-frame"
+              ? "Con nhìn các ô đã có chấm trong khung 5 nhé."
+              : exercise.layout === "ten-frame"
+                ? "Con nhìn hàng trên có 5 chấm, rồi nhìn hàng dưới nhé."
+                : "Con nhìn các chấm cùng lúc nhé.",
     };
   if (level === 2)
     return {

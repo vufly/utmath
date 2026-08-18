@@ -68,4 +68,17 @@ describe("quantity exercises", () => {
     );
     expect(quantityHint(exercise, 3).payload).toBe("Con cần đặt 5 chấm.");
   });
+
+  it("names visual structure instead of giving a generic recognition hint", () => {
+    const structured = generateQuantityExercise({
+      seed: 1,
+      quantity: 5,
+      stage: "structured",
+    });
+
+    expect(["dice", "domino", "five-frame"]).toContain(structured.layout);
+    expect(quantityHint(structured, 1).payload).not.toBe(
+      "Con thử nhìn theo nhóm, không cần đếm vội nhé.",
+    );
+  });
 });
