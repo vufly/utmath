@@ -64,7 +64,9 @@
       </div>
     {:else if exercise.presentation === "split"}
       <div class="bond-counters split-counters" aria-label={`${whole} chấm, ${partA} chấm đã biết`}>
-        {#each Array(whole) as _, index}<i class:known-counter={index < partA}></i>{#if index === partA - 1}<span class="split-divider" aria-hidden="true"></span>{/if}{/each}
+        <div class="counter-group blue" role="group" aria-label={`Nhóm bên trái: ${partA} chấm`}>{#each Array(partA) as _}<i></i>{/each}</div>
+        <span class="split-divider" aria-hidden="true"></span>
+        <div class="counter-group green" role="group" aria-label={`Nhóm bên phải: ${partB} chấm`}>{#each Array(partB) as _}<i></i>{/each}</div>
       </div>
     {:else}
       <svg class="bond-diagram" viewBox="0 0 360 260" role="img" aria-label={`Sơ đồ số ${whole}, hai phần là ${visiblePartA} và ${visiblePartB}`}>

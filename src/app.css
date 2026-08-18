@@ -461,7 +461,7 @@ h2 {
   max-width: 180px;
 }
 .counter-group i,
-.split-counters > i {
+.split-counters .counter-group i {
   background: #60a5fa;
   border: 3px solid #172554;
   border-radius: 50%;
@@ -469,17 +469,22 @@ h2 {
   width: 32px;
 }
 .counter-group.green i,
-.split-counters > i {
+.split-counters .counter-group.green i {
   background: #86efac;
 }
-.split-counters > i.known-counter {
-  background: #60a5fa;
+.split-counters {
+  flex-wrap: nowrap;
+  gap: 8px;
+}
+.split-counters .counter-group {
+  flex: 0 1 auto;
 }
 .split-divider {
+  flex: 0 0 auto;
   border-left: 3px dashed #64748b;
   height: 42px;
-  margin: 0 4px;
-  width: 12px;
+  margin: 0 2px;
+  width: 8px;
 }
 .fact-family {
   color: #172554;

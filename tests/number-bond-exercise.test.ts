@@ -114,6 +114,9 @@ describe("NumberBondExercise", () => {
 
     expect(screen.getByText(/Nhóm bên phải có mấy chấm/)).toBeInTheDocument();
     expect(container.querySelector(".split-divider")).toBeInTheDocument();
+    expect(
+      container.querySelectorAll(".split-counters .counter-group"),
+    ).toHaveLength(2);
   });
 
   it("shows all four related facts after a correct answer", () => {
