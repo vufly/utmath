@@ -177,6 +177,25 @@ describe("StoryPractice", () => {
       first.container.querySelectorAll(".basket-fruit .fruit"),
     ).toHaveLength(fruit.changeCount ?? 0);
     first.unmount();
+    const fish = {
+      ...combine,
+      sceneId: "fish-pond" as const,
+      objectKind: "fish" as const,
+    };
+    const fishScene = render(StoryPractice, {
+      exercise: fish,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      fishScene.container.querySelectorAll(".pond-fish .fish"),
+    ).toHaveLength(fish.startCount ?? 0);
+    expect(
+      fishScene.container.querySelectorAll(".joining-fish .fish"),
+    ).toHaveLength(fish.changeCount ?? 0);
+    fishScene.unmount();
     const second = render(StoryPractice, {
       exercise: missing,
       answered: 0,

@@ -896,10 +896,6 @@ h2 {
   top: 33px;
   width: 100px;
 }
-.fish-group {
-  max-width: 31%;
-  top: 10px;
-}
 .basket-fruit {
   left: 25%;
   top: 72px;
@@ -920,18 +916,22 @@ h2 {
   height: 31px;
   width: 29px;
 }
-.fish-left {
-  left: 4%;
+.pond-fish {
+  bottom: 24px;
+  left: 17%;
+  max-width: 60%;
 }
-.fish-right {
-  right: 4%;
+.joining-fish {
+  max-width: 30%;
+  right: 3%;
+  top: 10px;
 }
 .fish-arrow {
-  height: 58px;
-  left: calc(50% - 46px);
+  height: 70px;
   position: absolute;
-  top: 63px;
-  width: 92px;
+  right: 22%;
+  top: 33px;
+  width: 100px;
 }
 .combine-arrow {
   height: 58px;
@@ -940,7 +940,8 @@ h2 {
   top: 88px;
   width: 40px;
 }
-.fish-group .fish {
+.pond-fish .fish,
+.joining-fish .fish {
   height: 33px;
   width: 46px;
 }
@@ -977,8 +978,8 @@ h2 {
 .scene-replay .arriving-ducks {
   animation: story-arrive 1.5s ease-in-out infinite alternate;
 }
-.scene-motion .fish-group,
-.scene-replay .fish-group {
+.scene-motion .joining-fish,
+.scene-replay .joining-fish {
   animation: story-combine 1.5s ease-in-out infinite alternate;
 }
 @keyframes story-depart {
@@ -1000,10 +1001,10 @@ h2 {
 @media (prefers-reduced-motion: reduce) {
   .scene-motion .departing-birds,
   .scene-motion .arriving-ducks,
-  .scene-motion .fish-group,
+  .scene-motion .joining-fish,
   .scene-replay .departing-birds,
   .scene-replay .arriving-ducks,
-  .scene-replay .fish-group {
+  .scene-replay .joining-fish {
     animation: none;
   }
 }

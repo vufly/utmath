@@ -51,7 +51,7 @@
     <div class="scene-objects perched-birds">
       {#each Array(remainingCount) as _}<Bird variant="blue" />{/each}
     </div>
-    <svg class="scene-arrow leaving-arrow" viewBox="0 0 110 70" aria-hidden="true"><path d="M16 56C37 51 59 34 85 15m-17 1 18-2-6 17" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
+    <svg class="scene-arrow leaving-arrow" viewBox="0 0 110 70" aria-hidden="true"><path d="M16 56C37 51 59 34 85 15M77 33 85 15 65 17" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
     <div class="scene-objects departing-birds">
       {#each Array(changeCount) as _}<Bird variant="yellow" />{/each}
     </div>
@@ -64,7 +64,7 @@
     <div class="scene-objects pond-ducks">
       {#each Array(startCount) as _}<Duck variant="blue" />{/each}
     </div>
-    <svg class="scene-arrow entering-arrow" viewBox="0 0 100 70" aria-hidden="true"><path d="M12 18c30 4 49 17 72 36m-15-18 16 19-23 1" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
+    <svg class="scene-arrow entering-arrow" viewBox="0 0 100 70" aria-hidden="true"><path d="M88 18C58 22 48 54 20 54M36 40 20 54 36 68" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
     <div class="scene-objects arriving-ducks">
       {#each Array(changeCount) as _}<Duck variant="yellow" />{/each}
     </div>
@@ -87,11 +87,11 @@
       <path d="M46 102c41-18 223-30 272 0" fill="none" stroke="#7dd3fc" stroke-linecap="round" stroke-width="8" />
       <path d="M62 141c23-12 47-12 69-2m64 14c25-12 49-12 70-2" fill="none" stroke="#38bdf8" stroke-linecap="round" stroke-width="4" />
     </svg>
-    <div class="scene-objects fish-group fish-left">
+    <div class="scene-objects pond-fish">
       {#each Array(startCount) as _}<Fish variant="blue" />{/each}
     </div>
-    <svg class="scene-arrow fish-arrow" viewBox="0 0 92 58" aria-hidden="true"><path d="M8 29h66m-18-17 19 17-19 17" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
-    <div class="scene-objects fish-group fish-right">
+    <svg class="scene-arrow fish-arrow" viewBox="0 0 100 70" aria-hidden="true"><path d="M88 18C58 22 48 54 20 54M36 40 20 54 36 68" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
+    <div class="scene-objects joining-fish">
       {#each Array(changeCount) as _}<Fish variant="yellow" />{/each}
     </div>
   {:else}
