@@ -117,6 +117,25 @@ describe("StoryPractice", () => {
     ]);
   });
 
+  it("shows a fact family after a parts-whole number answer", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "add-to",
+      stage: "parts-whole",
+    });
+    render(StoryPractice, {
+      exercise,
+      feedback: "Đúng rồi!",
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.getByText("Con đọc to bốn phép tính để nhớ nhé:"),
+    ).toBeInTheDocument();
+  });
+
   it("does not show a fact family after a direction-only answer", () => {
     const exercise = generateStoryExercise({
       seed: 1,
@@ -137,6 +156,25 @@ describe("StoryPractice", () => {
     expect(
       screen.getByRole("button", { name: "Tiếp tục" }),
     ).toBeInTheDocument();
+  });
+
+  it("uses more-or-fewer choices for a before-and-after question", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "add-to",
+      stage: "before-after",
+    });
+    render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.getByRole("button", { name: "Nhiều hơn" }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Ít hơn" })).toBeInTheDocument();
   });
 
   it("renders a tree scene with remaining and departing birds", () => {
@@ -298,5 +336,53 @@ describe("StoryPractice", () => {
     expect(
       screen.getByRole("heading", { name: "Số lượng cần tăng hay giảm?" }),
     ).toBeInTheDocument();
+  });
+
+  it("offers an equal pair when both relevant numbers match", () => {
+    const exercise = {
+      ...generateStoryExercise({
+        seed: 1,
+        storyType: "missing-part",
+        stage: "numbers",
+      }),
+      startCount: 4,
+      changeCount: 4,
+      total: 8,
+    };
+    render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(screen.getByRole("button", { name: "4 và 4" })).toBeInTheDocument();
+  });
+
+  it("keeps addition equation distractors nonnegative and invalid", () => {
+    const exercise = {
+      ...generateStoryExercise({
+        seed: 1,
+        storyType: "combine",
+        stage: "equation-choice",
+      }),
+      sceneId: "fruit-basket" as const,
+      objectKind: "apple" as const,
+      startCount: 4,
+      changeCount: 6,
+      total: 10,
+    };
+    render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(screen.getByRole("button", { name: "6-4 = 2" })).toBeInTheDocument();
+    expect(screen.queryByText(/-2/)).not.toBeInTheDocument();
+    expect(
+      screen.queryByRole("button", { name: "4 + 6 = 10" }),
+    ).not.toBeInTheDocument();
   });
 });

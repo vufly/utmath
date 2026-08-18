@@ -108,16 +108,28 @@ function operatorFor(exercise: StoryExercise): "+" | "-" {
   return exercise.storyType === "take-away" ? "-" : "+";
 }
 
+function operandsFor(exercise: StoryExercise): [number, number] {
+  const start = exercise.startCount ?? 0;
+  const change = exercise.changeCount ?? 0;
+
+  return exercise.sceneId === "fruit-basket"
+    ? [change, start]
+    : [start, change];
+}
+
 function equationFor(exercise: StoryExercise): string {
-  return `${exercise.startCount}${operatorFor(exercise)}${exercise.changeCount}=${exercise.total}`;
+  const [first, second] = operandsFor(exercise);
+  return `${first}${operatorFor(exercise)}${second}=${exercise.total}`;
 }
 
 function expectedStoryAnswer(exercise: StoryExercise): unknown {
   if (exercise.stage === "direction" || exercise.stage === "before-after")
     return operatorFor(exercise) === "+" ? "increase" : "decrease";
   if (exercise.stage === "operator") return operatorFor(exercise);
-  if (exercise.stage === "numbers")
-    return `${exercise.startCount},${exercise.changeCount}`;
+  if (exercise.stage === "numbers") {
+    const [first, second] = operandsFor(exercise);
+    return `${first},${second}`;
+  }
   if (exercise.stage === "equation-choice" || exercise.stage === "build")
     return equationFor(exercise);
   if (exercise.stage === "parts-whole") return storyAnswer(exercise);
@@ -126,8 +138,12 @@ function expectedStoryAnswer(exercise: StoryExercise): unknown {
 
 function storyAnswerLabel(exercise: StoryExercise): string {
   const answer = expectedStoryAnswer(exercise);
-  if (answer === "increase") return "tăng lên";
-  if (answer === "decrease") return "giảm đi";
+  if (answer === "increase")
+    return exercise.stage === "before-after" ? "nhiều hơn" : "tăng lên";
+  if (answer === "decrease")
+    return exercise.stage === "before-after" ? "ít hơn" : "giảm đi";
+  if (typeof answer === "string" && /^\d+,\d+$/.test(answer))
+    return answer.replace(",", " và ");
   return String(answer);
 }
 

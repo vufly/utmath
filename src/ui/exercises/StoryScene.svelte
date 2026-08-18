@@ -23,7 +23,7 @@
     if (exercise.sceneId === "duck-pond")
       return `${startCount} con vịt ở ao, ${changeCount} con vịt bơi vào ao.`;
     if (exercise.sceneId === "fruit-basket")
-      return `${startCount} quả táo và ${changeCount} quả táo ghép vào cùng giỏ.`;
+      return `${changeCount} quả táo trong giỏ, ${startCount} quả táo được thêm vào.`;
     if (exercise.sceneId === "fish-pond")
       return `${startCount} con cá và ${changeCount} con cá bơi vào cùng ao.`;
     if (exercise.sceneId === "book-desk")
@@ -42,11 +42,10 @@
 >
   {#if exercise.sceneId === "bird-tree"}
     <svg class="scene-setting tree-setting" viewBox="0 0 360 180" aria-hidden="true">
-      <path d="M71 172V64c0-24 23-38 41-49" fill="none" stroke="#8b5a2b" stroke-linecap="round" stroke-width="24" />
-      <path d="M83 98c56-15 106-9 179 10" fill="none" stroke="#8b5a2b" stroke-linecap="round" stroke-width="18" />
-      <circle cx="86" cy="35" r="37" fill="#86efac" stroke="#166534" stroke-width="4" />
-      <circle cx="133" cy="45" r="42" fill="#86efac" stroke="#166534" stroke-width="4" />
-      <path d="M38 158h286" stroke="#86efac" stroke-linecap="round" stroke-width="18" />
+      <path d="M42 166V91c8-20 24-33 45-42" fill="none" stroke="#8b5a2b" stroke-linecap="round" stroke-width="18" />
+      <path d="M42 106c73-23 158-18 243 0M42 145c59-17 127-14 193 0" fill="none" stroke="#8b5a2b" stroke-linecap="round" stroke-width="13" />
+      <path d="M44 67C30 54 35 33 51 30c10-2 17 5 20 14 9-13 28-9 31 6 2 10-6 17-16 20-16 4-30 3-42-3Z" fill="#86efac" stroke="#166534" stroke-linejoin="round" stroke-width="4" />
+      <path d="M79 54c8-19 31-18 36-2-10 13-27 14-36 2Z" fill="#bbf7d0" stroke="#166534" stroke-linejoin="round" stroke-width="4" />
     </svg>
     <div class="scene-objects perched-birds">
       {#each Array(remainingCount) as _}<Bird variant="blue" />{/each}

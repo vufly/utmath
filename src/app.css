@@ -862,22 +862,32 @@ h2 {
   width: 50px;
 }
 .perched-birds {
-  left: 25%;
-  max-width: 52%;
-  top: 56px;
+  gap: 6px;
+  left: 15%;
+  max-width: 54%;
+  top: 62px;
+}
+.perched-birds .bird {
+  height: 32px;
+  width: 41px;
 }
 .departing-birds {
-  max-width: 33%;
-  right: 4%;
-  top: 3px;
-  transform: rotate(-8deg);
+  gap: 6px;
+  max-width: 31%;
+  right: 1%;
+  top: 0;
+}
+.departing-birds .bird {
+  height: 32px;
+  width: 41px;
 }
 .leaving-arrow {
-  height: 70px;
+  height: 60px;
   position: absolute;
-  right: 21%;
-  top: 4px;
-  width: 110px;
+  right: 30%;
+  top: 5px;
+  width: 72px;
+  z-index: 1;
 }
 .pond-ducks {
   bottom: 25px;
@@ -1027,7 +1037,12 @@ h2 {
     width: 43px;
   }
   .perched-birds {
-    left: 22%;
+    left: 3%;
+  }
+  .perched-birds .bird,
+  .departing-birds .bird {
+    height: 28px;
+    width: 36px;
   }
   .desk-objects .book {
     height: 39px;

@@ -21,9 +21,10 @@
   const completed = $derived(feedback.includes("Đúng"));
   const showFactFamily = $derived(
     completed &&
-      (exercise.stage === "equation-choice" ||
-        exercise.stage === "build" ||
-        exercise.stage === "result"),
+      exercise.stage !== "direction" &&
+      exercise.stage !== "before-after" &&
+      exercise.stage !== "operator" &&
+      exercise.stage !== "numbers",
   );
   const replayAction = $derived(Boolean(feedback) && !completed);
   const objectLabel = $derived(
@@ -46,8 +47,18 @@
         ? "bay đi"
         : "ghép vào cùng nhóm",
   );
+  const firstOperand = $derived(
+    exercise.sceneId === "fruit-basket"
+      ? (exercise.changeCount ?? 0)
+      : (exercise.startCount ?? 0),
+  );
+  const secondOperand = $derived(
+    exercise.sceneId === "fruit-basket"
+      ? (exercise.startCount ?? 0)
+      : (exercise.changeCount ?? 0),
+  );
   const equation = $derived(
-    `${exercise.startCount}${operator}${exercise.changeCount}=${exercise.total}`,
+    `${firstOperand}${operator}${secondOperand}=${exercise.total}`,
   );
   const factFamily = $derived.by(() => {
     const start = exercise.startCount ?? 0;
@@ -56,10 +67,10 @@
 
     return isAdding
       ? [
-          `${start} + ${change} = ${total}`,
-          `${change} + ${start} = ${total}`,
-          `${total} − ${change} = ${start}`,
-          `${total} − ${start} = ${change}`,
+          `${firstOperand} + ${secondOperand} = ${total}`,
+          `${secondOperand} + ${firstOperand} = ${total}`,
+          `${total} − ${secondOperand} = ${firstOperand}`,
+          `${total} − ${firstOperand} = ${secondOperand}`,
         ]
       : [
           `${start} − ${change} = ${total}`,
@@ -79,8 +90,8 @@
   const equationChoices = $derived([
     ...new Set([
       equation,
-      `${exercise.startCount}${isAdding ? "-" : "+"}${exercise.changeCount}=${isAdding ? (exercise.startCount ?? 0) - (exercise.changeCount ?? 0) : (exercise.startCount ?? 0) + (exercise.changeCount ?? 0)}`,
-      `${exercise.changeCount}${operator}${exercise.startCount}=${exercise.total}`,
+      `${firstOperand}${isAdding ? "-" : "+"}${secondOperand}=${isAdding ? Math.abs(firstOperand - secondOperand) : firstOperand + secondOperand}`,
+      `${secondOperand}${operator}${firstOperand}=${isAdding ? (exercise.total ?? 0) - 1 : (exercise.total ?? 0) + 1}`,
     ]),
   ]);
   const prompt = $derived(
@@ -134,7 +145,7 @@
     <h1 id="story-title">{prompt}</h1>
     <p class="exercise-prompt">
       {exercise.storyType === "combine"
-        ? `${exercise.startCount} ${objectLabel} và ${exercise.changeCount} ${objectLabel}.`
+        ? `${firstOperand} ${objectLabel} và ${secondOperand} ${objectLabel}.`
         : exercise.storyType === "missing-part"
           ? `${exercise.startCount} ${objectLabel}, cần thành ${exercise.total} ${objectLabel}.`
           : `${exercise.startCount} ${objectLabel}. ${exercise.changeCount} ${objectLabel} ${isAdding ? actionLabel : "bay đi"}.`}
@@ -155,11 +166,11 @@
     {:else}
       <button class="hint-button" type="button" onclick={onHint}>Gợi ý</button>
       {#if exercise.stage === "direction" || exercise.stage === "before-after"}
-        <div class="story-choice-grid"><button type="button" onclick={() => onAnswer("increase")}>Tăng lên</button><button type="button" onclick={() => onAnswer("decrease")}>Giảm đi</button></div>
+        <div class="story-choice-grid"><button type="button" onclick={() => onAnswer("increase")}>{exercise.stage === "before-after" ? "Nhiều hơn" : "Tăng lên"}</button><button type="button" onclick={() => onAnswer("decrease")}>{exercise.stage === "before-after" ? "Ít hơn" : "Giảm đi"}</button></div>
       {:else if exercise.stage === "operator"}
         <div class="story-choice-grid"><button type="button" onclick={() => onAnswer("+")}>+</button><button type="button" onclick={() => onAnswer("-")}>−</button></div>
       {:else if exercise.stage === "numbers"}
-        <div class="story-choice-grid">{#each numberChoices as first}{#each numberChoices as second}{#if first !== second}<button type="button" onclick={() => onAnswer(`${first},${second}`)}>{first} và {second}</button>{/if}{/each}{/each}</div>
+        <div class="story-choice-grid">{#each numberChoices as first}{#each numberChoices as second}{#if first !== second || (firstOperand === first && secondOperand === second)}<button type="button" onclick={() => onAnswer(`${first},${second}`)}>{first} và {second}</button>{/if}{/each}{/each}</div>
       {:else if exercise.stage === "equation-choice"}
         <div class="story-choice-grid">{#each equationChoices as choice}<button type="button" onclick={() => onAnswer(choice)}>{choice.replace("=", " = ")}</button>{/each}</div>
       {:else if exercise.stage === "build"}

@@ -29,6 +29,16 @@ describe("picture story exercises", () => {
     expect(storyHint(exercise, 3).payload).toBe("Đáp án là giảm đi.");
   });
 
+  it("uses before-and-after language in its final hint", () => {
+    const exercise = generateStoryExercise({
+      seed: 2,
+      storyType: "add-to",
+      stage: "before-after",
+    });
+
+    expect(storyHint(exercise, 3).payload).toBe("Đáp án là nhiều hơn.");
+  });
+
   it("supports all semantic story stages and story types", () => {
     const direction = generateStoryExercise({ seed: 3, stage: "direction" });
     const operator = generateStoryExercise({ seed: 3, stage: "operator" });
@@ -67,6 +77,40 @@ describe("picture story exercises", () => {
       true,
     );
     expect(evaluateStoryAnswer(missing, missing.total).correct).toBe(false);
+  });
+
+  it("formats equal relevant numbers as a selectable Vietnamese pair", () => {
+    const exercise = {
+      ...generateStoryExercise({
+        seed: 3,
+        storyType: "missing-part",
+        stage: "numbers",
+      }),
+      startCount: 4,
+      changeCount: 4,
+      total: 8,
+    };
+
+    expect(evaluateStoryAnswer(exercise, "4,4").correct).toBe(true);
+    expect(storyHint(exercise, 3).payload).toBe("Đáp án là 4 và 4.");
+  });
+
+  it("uses basket order for the fruit equation", () => {
+    const exercise = {
+      ...generateStoryExercise({
+        seed: 3,
+        storyType: "combine",
+        stage: "equation-choice",
+      }),
+      sceneId: "fruit-basket" as const,
+      objectKind: "apple" as const,
+      startCount: 4,
+      changeCount: 6,
+      total: 10,
+    };
+
+    expect(evaluateStoryAnswer(exercise, "6+4=10").correct).toBe(true);
+    expect(evaluateStoryAnswer(exercise, "4+6=10").correct).toBe(false);
   });
 
   it("uses a story-compatible semantic scene with exact counts", () => {
