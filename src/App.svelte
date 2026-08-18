@@ -264,13 +264,25 @@
     await repository.saveSession(activeSession);
 
     if (answered >= sessionTarget) {
+      if (currentExercise.kind === 'part-whole') return;
       await finishSession();
       return;
     }
-    window.setTimeout(
-      refreshExercise,
-      currentExercise.kind === 'part-whole' ? 2200 : 450,
-    );
+    if (currentExercise.kind === 'part-whole') return;
+    window.setTimeout(refreshExercise, 450);
+  }
+
+  async function continueNumberBond(): Promise<void> {
+    if (
+      currentExercise?.kind !== 'part-whole' ||
+      !feedback.includes('Đúng')
+    )
+      return;
+    if (answered >= sessionTarget) {
+      await finishSession();
+      return;
+    }
+    refreshExercise();
   }
 
   function showHint(): void {
@@ -367,7 +379,7 @@
   <FreePractice onSelect={(module) => startSession('free-practice', module)} onHome={() => navigate('home')} />
 {:else if route === 'session' && currentExercise}
   {#if currentExercise.kind === 'part-whole'}
-    <NumberBondExercise exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+    <NumberBondExercise exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} onNext={continueNumberBond} />
   {:else if currentExercise.kind === 'quantity'}
     <QuantityPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
   {:else if currentExercise.kind === 'arithmetic' || currentExercise.kind === 'missing-number'}

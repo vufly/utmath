@@ -121,6 +121,7 @@ describe("NumberBondExercise", () => {
 
   it("shows all four related facts after a correct answer", () => {
     const split = generateNumberBondExercise({ seed: 1, stage: "split" });
+    const onNext = vi.fn();
     const params = split.generator!.params as {
       whole: number;
       partA: number;
@@ -132,6 +133,7 @@ describe("NumberBondExercise", () => {
       feedback: "Đúng rồi!",
       onAnswer: vi.fn(),
       onHint: vi.fn(),
+      onNext,
     });
 
     expect(
@@ -140,5 +142,13 @@ describe("NumberBondExercise", () => {
     expect(
       screen.getByText(`${params.partA} + ${params.partB} = ${params.whole}`),
     ).toBeInTheDocument();
+    expect(
+      screen.getByText("Con đọc to bốn phép tính để nhớ nhé:"),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "0" })).not.toBeInTheDocument();
+    fireEvent.click(
+      screen.getByRole("button", { name: "Con đã đọc xong, tiếp tục" }),
+    );
+    expect(onNext).toHaveBeenCalledOnce();
   });
 });

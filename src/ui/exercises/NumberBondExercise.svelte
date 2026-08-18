@@ -1,13 +1,14 @@
 <script lang="ts">
   import type { Hint, PartWholeExercise } from "../../core/types/domain";
 
-  let { exercise, feedback = "", hint, answered, onAnswer, onHint }: {
+  let { exercise, feedback = "", hint, answered, onAnswer, onHint, onNext = () => {} }: {
     exercise: PartWholeExercise;
     feedback?: string;
     hint?: Hint;
     answered: number;
     onAnswer: (answer: number) => void;
     onHint: () => void;
+    onNext?: () => void;
   } = $props();
 
   const params = $derived(exercise.generator?.params);
@@ -93,7 +94,7 @@
     {/if}
     {#if feedback.includes("Đúng")}
       <section class="bond-fact-family" aria-label="Các phép tính cùng liên kết số">
-        <strong>Cùng một liên kết số:</strong>
+        <strong>Con đọc to bốn phép tính để nhớ nhé:</strong>
         <span>{whole} − {partB} = {partA}</span>
         <span>{whole} − {partA} = {partB}</span>
         <span>{partB} + {partA} = {whole}</span>
@@ -119,11 +120,15 @@
   </section>
 
   <section class="answer-panel" aria-label="Chọn câu trả lời">
-    <button class="hint-button" type="button" onclick={onHint}>Gợi ý</button>
-    <div class="number-grid">
-      {#each Array(11) as _, value}
-        <button type="button" onclick={() => onAnswer(value)}>{value}</button>
-      {/each}
-    </div>
+    {#if feedback.includes("Đúng")}
+      <button class="primary-action compact" type="button" onclick={onNext}>Con đã đọc xong, tiếp tục</button>
+    {:else}
+      <button class="hint-button" type="button" onclick={onHint}>Gợi ý</button>
+      <div class="number-grid">
+        {#each Array(11) as _, value}
+          <button type="button" onclick={() => onAnswer(value)}>{value}</button>
+        {/each}
+      </div>
+    {/if}
   </section>
 </main>
