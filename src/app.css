@@ -547,14 +547,25 @@ h2 {
   position: relative;
 }
 .strategy-number-line span.line-step {
+  background: #eff6ff;
   border-color: #60a5fa;
 }
-.strategy-number-line span.line-start,
+.strategy-number-line span.line-start {
+  background: #dbeafe;
+  border: 2px solid #2563eb;
+  border-radius: 8px;
+  color: #1d4ed8;
+}
 .strategy-number-line span.line-end {
   background: #d1fae5;
   border: 2px solid #047857;
-  border-radius: 50%;
+  border-radius: 8px;
   color: #065f46;
+}
+.number-line-instruction {
+  color: #1e3a8a;
+  font-weight: 700;
+  margin: 10px 0 0 !important;
 }
 .missing-number-frame {
   display: grid;
