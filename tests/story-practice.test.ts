@@ -91,6 +91,26 @@ describe("StoryPractice", () => {
     expect(onNext).toHaveBeenCalledOnce();
   });
 
+  it("asks for the remaining group in a take-away result question", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "take-away",
+      stage: "result",
+    });
+    render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.getByRole("heading", {
+        name: "Còn lại bao nhiêu con chim?",
+      }),
+    ).toBeInTheDocument();
+  });
+
   it("puts the stated addition first, followed by its related addition", () => {
     const exercise = generateStoryExercise({
       seed: 1,

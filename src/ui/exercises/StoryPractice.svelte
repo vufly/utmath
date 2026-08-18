@@ -111,11 +111,13 @@
               ? "Hai số nào kể điều đang xảy ra?"
               : exercise.stage === "equation-choice"
                 ? "Phép tính nào đúng với tranh?"
-                : exercise.stage === "build"
-                  ? "Lập phép tính từ tranh"
-                  : exercise.storyType === "missing-part"
-                    ? `Cần thêm bao nhiêu ${objectLabel}?`
-                    : "Có tất cả bao nhiêu?",
+                  : exercise.stage === "build"
+                    ? "Lập phép tính từ tranh"
+                    : exercise.storyType === "missing-part"
+                      ? `Cần thêm bao nhiêu ${objectLabel}?`
+                    : exercise.storyType === "take-away"
+                      ? `Còn lại bao nhiêu ${objectLabel}?`
+                      : "Có tất cả bao nhiêu?",
   );
   const hintText = $derived(
     typeof hint?.payload === "string"
