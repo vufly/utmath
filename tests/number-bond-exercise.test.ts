@@ -106,4 +106,17 @@ describe("NumberBondExercise", () => {
 
     expect(onAnswer).toHaveBeenCalledWith(combineAnswer);
   });
+
+  it("separates known and unknown groups in split practice", () => {
+    const split = generateNumberBondExercise({ seed: 1, stage: "split" });
+    const { container } = render(NumberBondExercise, {
+      exercise: split,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(screen.getByText(/Nhóm bên phải có mấy chấm/)).toBeInTheDocument();
+    expect(container.querySelector(".split-divider")).toBeInTheDocument();
+  });
 });

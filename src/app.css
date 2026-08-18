@@ -475,6 +475,12 @@ h2 {
 .split-counters > i.known-counter {
   background: #60a5fa;
 }
+.split-divider {
+  border-left: 3px dashed #64748b;
+  height: 42px;
+  margin: 0 4px;
+  width: 12px;
+}
 .fact-family {
   color: #172554;
   display: grid;

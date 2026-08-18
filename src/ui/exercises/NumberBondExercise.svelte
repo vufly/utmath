@@ -36,7 +36,7 @@
     exercise.presentation === "combine"
       ? `${partA} và ${partB} chấm có tất cả bao nhiêu?`
       : exercise.presentation === "split"
-        ? `Có ${whole} chấm. ${partA} chấm ở bên trái, còn lại bao nhiêu?`
+        ? `Có ${whole} chấm. Nhóm bên trái có ${partA} chấm. Nhóm bên phải có mấy chấm?`
         : exercise.presentation === "fact-family"
           ? "Từ hai phần, tổng là bao nhiêu?"
           : exercise.unknown === "whole"
@@ -64,7 +64,7 @@
       </div>
     {:else if exercise.presentation === "split"}
       <div class="bond-counters split-counters" aria-label={`${whole} chấm, ${partA} chấm đã biết`}>
-        {#each Array(whole) as _, index}<i class:known-counter={index < partA}></i>{/each}
+        {#each Array(whole) as _, index}<i class:known-counter={index < partA}></i>{#if index === partA - 1}<span class="split-divider" aria-hidden="true"></span>{/if}{/each}
       </div>
     {:else}
       <svg class="bond-diagram" viewBox="0 0 360 260" role="img" aria-label={`Sơ đồ số ${whole}, hai phần là ${visiblePartA} và ${visiblePartB}`}>
