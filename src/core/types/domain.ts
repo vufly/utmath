@@ -83,6 +83,13 @@ export interface MissingNumberExercise extends ExerciseBase {
 export interface StoryExercise extends ExerciseBase {
   kind: "story";
   storyType: "add-to" | "take-away" | "combine" | "missing-part";
+  sceneId:
+    | "bird-tree"
+    | "duck-pond"
+    | "fruit-basket"
+    | "fish-pond"
+    | "book-desk"
+    | "pencil-desk";
   stage:
     | "direction"
     | "before-after"
@@ -92,7 +99,7 @@ export interface StoryExercise extends ExerciseBase {
     | "equation-choice"
     | "build"
     | "result";
-  objectKind: string;
+  objectKind: "bird" | "duck" | "apple" | "fish" | "book" | "pencil";
   startCount?: number;
   changeCount?: number;
   partA?: number;

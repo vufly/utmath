@@ -53,4 +53,32 @@ describe("picture story exercises", () => {
     ).toBe(true);
     expect(storyAnswer(missing)).toBe(missing.changeCount);
   });
+
+  it("uses a story-compatible semantic scene with exact counts", () => {
+    const scenes = {
+      "add-to": ["duck-pond"],
+      "take-away": ["bird-tree"],
+      combine: ["fruit-basket", "fish-pond"],
+      "missing-part": ["book-desk", "pencil-desk"],
+    } as const;
+
+    for (const storyType of Object.keys(scenes) as Array<keyof typeof scenes>) {
+      for (let seed = 0; seed < 20; seed += 1) {
+        const exercise = generateStoryExercise({ seed, storyType });
+        expect(scenes[storyType]).toContain(exercise.sceneId);
+        expect(exercise.generator?.params.sceneId).toBe(exercise.sceneId);
+        expect(exercise.generator?.params.objectKind).toBe(exercise.objectKind);
+
+        if (storyType === "take-away") {
+          expect(exercise.total).toBe(
+            (exercise.startCount ?? 0) - (exercise.changeCount ?? 0),
+          );
+        } else {
+          expect(exercise.total).toBe(
+            (exercise.startCount ?? 0) + (exercise.changeCount ?? 0),
+          );
+        }
+      }
+    }
+  });
 });

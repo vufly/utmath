@@ -1,6 +1,6 @@
 <script lang="ts">
   import type { Hint, StoryExercise } from "../../core/types/domain";
-  import Bird from "../shared/Bird.svelte";
+  import StoryScene from "./StoryScene.svelte";
 
   let { exercise, feedback = "", hint, answered, onAnswer, onHint, onNext = () => {} }: {
     exercise: StoryExercise;
@@ -19,13 +19,26 @@
   const isAdding = $derived(exercise.storyType !== "take-away");
   const operator = $derived(isAdding ? "+" : "-");
   const completed = $derived(feedback.includes("Đúng"));
-  const remainingCount = $derived(
-    isAdding
-      ? exercise.startCount ?? 0
-      : (exercise.startCount ?? 0) - (exercise.changeCount ?? 0),
+  const replayAction = $derived(Boolean(feedback) && !completed);
+  const objectLabel = $derived(
+    exercise.objectKind === "bird"
+      ? "con chim"
+      : exercise.objectKind === "duck"
+        ? "con vịt"
+        : exercise.objectKind === "fish"
+          ? "con cá"
+          : exercise.objectKind === "apple"
+            ? "quả táo"
+            : exercise.objectKind === "book"
+              ? "quyển sách"
+              : "bút chì",
   );
-  const movingCount = $derived(
-    exercise.storyType === "missing-part" ? 0 : (exercise.changeCount ?? 0),
+  const actionLabel = $derived(
+    exercise.sceneId === "duck-pond"
+      ? "bơi vào ao"
+      : exercise.sceneId === "bird-tree"
+        ? "bay đi"
+        : "ghép vào cùng nhóm",
   );
   const equation = $derived(
     `${exercise.startCount}${operator}${exercise.changeCount}=${exercise.total}`,
@@ -68,7 +81,7 @@
                 : exercise.stage === "build"
                   ? "Lập phép tính từ tranh"
                   : exercise.storyType === "missing-part"
-                    ? "Cần thêm bao nhiêu con chim?"
+                    ? `Cần thêm bao nhiêu ${objectLabel}?`
                     : "Có tất cả bao nhiêu?",
   );
 
@@ -99,15 +112,12 @@
     <h1 id="story-title">{prompt}</h1>
     <p class="exercise-prompt">
       {exercise.storyType === "combine"
-        ? `${exercise.startCount} con chim và ${exercise.changeCount} con chim.`
+        ? `${exercise.startCount} ${objectLabel} và ${exercise.changeCount} ${objectLabel}.`
         : exercise.storyType === "missing-part"
-          ? `${exercise.startCount} con chim, cần thành ${exercise.total} con chim.`
-          : `${exercise.startCount} con chim. ${exercise.changeCount} con chim ${isAdding ? "bay đến" : "bay đi"}.`}
+          ? `${exercise.startCount} ${objectLabel}, cần thành ${exercise.total} ${objectLabel}.`
+          : `${exercise.startCount} ${objectLabel}. ${exercise.changeCount} ${objectLabel} ${isAdding ? actionLabel : "bay đi"}.`}
     </p>
-    <div class="story-birds" aria-label={isAdding ? `${exercise.startCount} con chim và ${exercise.changeCount} con chim` : `${exercise.startCount} con chim, trong đó ${exercise.changeCount} con chim bay đi`}>
-      {#each Array(remainingCount) as _}<Bird variant="blue" />{/each}
-      {#each Array(movingCount) as _}<span class:arriving-bird={isAdding} class:departing-bird={!isAdding}><Bird variant="yellow" /></span>{/each}
-    </div>
+    <StoryScene {exercise} replay={replayAction} />
     {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{typeof hint.payload === "string" ? hint.payload : "Nhìn điều đang xảy ra trong tranh nhé."}</p></aside>{/if}
     {#if feedback}<p class:success={completed} class="answer-feedback" role="status">{feedback}</p>{/if}
     {#if completed}

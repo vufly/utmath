@@ -19,6 +19,22 @@ const stages: StoryStage[] = [
   "result",
 ];
 
+const sceneChoices = {
+  "add-to": [{ sceneId: "duck-pond", objectKind: "duck" }],
+  "take-away": [{ sceneId: "bird-tree", objectKind: "bird" }],
+  combine: [
+    { sceneId: "fruit-basket", objectKind: "apple" },
+    { sceneId: "fish-pond", objectKind: "fish" },
+  ],
+  "missing-part": [
+    { sceneId: "book-desk", objectKind: "book" },
+    { sceneId: "pencil-desk", objectKind: "pencil" },
+  ],
+} as const satisfies Record<
+  StoryExercise["storyType"],
+  readonly Pick<StoryExercise, "sceneId" | "objectKind">[]
+>;
+
 export function generateStoryExercise(options: {
   seed: number;
   storyType?: StoryExercise["storyType"];
@@ -29,7 +45,9 @@ export function generateStoryExercise(options: {
     options.storyType ??
     random.pick(["add-to", "take-away", "combine", "missing-part"] as const);
   const stage = options.stage ?? "result";
-  const objectKind = random.pick(["apple", "fish", "bird"] as const);
+  const scene = random.pick<Pick<StoryExercise, "sceneId" | "objectKind">>(
+    sceneChoices[storyType],
+  );
   const isAdding = storyType !== "take-away";
   const startCount = isAdding ? random.int(1, 7) : random.int(3, 10);
   const changeCount = isAdding
@@ -49,11 +67,20 @@ export function generateStoryExercise(options: {
       generatorId: "picture-story",
       generatorVersion: 2,
       seed: options.seed,
-      params: { storyType, stage, objectKind, startCount, changeCount, total },
+      params: {
+        storyType,
+        stage,
+        sceneId: scene.sceneId,
+        objectKind: scene.objectKind,
+        startCount,
+        changeCount,
+        total,
+      },
     },
     storyType,
     stage,
-    objectKind,
+    sceneId: scene.sceneId,
+    objectKind: scene.objectKind,
     startCount,
     changeCount,
     total,

@@ -90,4 +90,106 @@ describe("StoryPractice", () => {
     );
     expect(onNext).toHaveBeenCalledOnce();
   });
+
+  it("renders a tree scene with remaining and departing birds", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "take-away",
+      stage: "direction",
+    });
+    const { container } = render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(container.querySelector('[data-scene="bird-tree"]')).toBeTruthy();
+    expect(container.querySelectorAll(".perched-birds .bird")).toHaveLength(
+      (exercise.startCount ?? 0) - (exercise.changeCount ?? 0),
+    );
+    expect(container.querySelectorAll(".departing-birds .bird")).toHaveLength(
+      exercise.changeCount ?? 0,
+    );
+    expect(
+      screen.getByRole("img", { name: /chim còn đậu.*chim bay đi/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders arriving ducks at a pond and re-emphasizes a wrong action", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "add-to",
+      stage: "operator",
+    });
+    const { container } = render(StoryPractice, {
+      exercise,
+      feedback: "Chưa đúng. Con thử nhìn hai phần một lần nữa nhé.",
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(container.querySelector('[data-scene="duck-pond"]')).toHaveClass(
+      "scene-replay",
+    );
+    expect(container.querySelectorAll(".pond-ducks .duck")).toHaveLength(
+      exercise.startCount ?? 0,
+    );
+    expect(container.querySelectorAll(".arriving-ducks .duck")).toHaveLength(
+      exercise.changeCount ?? 0,
+    );
+    expect(
+      screen.getByRole("img", { name: /vịt ở ao.*vịt bơi vào ao/i }),
+    ).toBeInTheDocument();
+  });
+
+  it("renders combined and missing-part scenes without reusing birds", () => {
+    const combine = generateStoryExercise({
+      seed: 1,
+      storyType: "combine",
+      stage: "parts-whole",
+    });
+    const missing = generateStoryExercise({
+      seed: 1,
+      storyType: "missing-part",
+      stage: "result",
+    });
+    const fruit = {
+      ...combine,
+      sceneId: "fruit-basket" as const,
+      objectKind: "apple" as const,
+    };
+    const first = render(StoryPractice, {
+      exercise: fruit,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      first.container.querySelector(`[data-scene="${fruit.sceneId}"]`),
+    ).toBeTruthy();
+    expect(
+      first.container.querySelectorAll(".incoming-fruit .fruit"),
+    ).toHaveLength(fruit.startCount ?? 0);
+    expect(
+      first.container.querySelectorAll(".basket-fruit .fruit"),
+    ).toHaveLength(fruit.changeCount ?? 0);
+    first.unmount();
+    const second = render(StoryPractice, {
+      exercise: missing,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      second.container.querySelector(`[data-scene="${missing.sceneId}"]`),
+    ).toBeTruthy();
+    expect(
+      second.container.querySelectorAll(".missing-slots span"),
+    ).toHaveLength(missing.changeCount ?? 0);
+    expect(second.container.querySelectorAll(".bird")).toHaveLength(0);
+  });
 });

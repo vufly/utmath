@@ -833,26 +833,203 @@ h2 {
   letter-spacing: 0.02em;
   margin: 44px 0;
 }
-.story-birds {
+.story-scene {
+  isolation: isolate;
+  margin: 20px auto 28px;
+  max-width: 460px;
+  min-height: 190px;
+  overflow: hidden;
+  position: relative;
+  width: 100%;
+}
+.scene-setting {
+  height: 190px;
+  inset: 0;
+  position: absolute;
+  width: 100%;
+  z-index: -1;
+}
+.scene-objects {
   display: flex;
   flex-wrap: wrap;
-  gap: 8px;
+  gap: 2px 5px;
   justify-content: center;
-  margin: 28px auto;
-  max-width: 420px;
+  position: absolute;
 }
-.story-birds .bird {
-  height: 44px;
-  width: 58px;
+.story-scene .bird,
+.story-scene .scene-object {
+  height: 39px;
+  width: 50px;
 }
-.story-birds .arriving-bird {
-  display: block;
-  transform: translateY(-8px);
+.perched-birds {
+  left: 25%;
+  max-width: 52%;
+  top: 56px;
 }
-.story-birds .departing-bird {
-  display: block;
-  opacity: 0.72;
-  transform: translate(12px, -12px);
+.departing-birds {
+  max-width: 33%;
+  right: 4%;
+  top: 3px;
+  transform: rotate(-8deg);
+}
+.leaving-arrow {
+  height: 70px;
+  position: absolute;
+  right: 21%;
+  top: 4px;
+  width: 110px;
+}
+.pond-ducks {
+  bottom: 25px;
+  left: 20%;
+  max-width: 54%;
+}
+.arriving-ducks {
+  max-width: 30%;
+  right: 3%;
+  top: 13px;
+}
+.entering-arrow {
+  height: 70px;
+  position: absolute;
+  right: 22%;
+  top: 33px;
+  width: 100px;
+}
+.fish-group {
+  max-width: 31%;
+  top: 10px;
+}
+.basket-fruit {
+  left: 25%;
+  top: 72px;
+  width: 50%;
+}
+.basket-fruit .fruit {
+  height: 31px;
+  width: 29px;
+}
+.incoming-fruit {
+  align-content: center;
+  height: 130px;
+  left: 2%;
+  top: 50px;
+  width: 16%;
+}
+.incoming-fruit .fruit {
+  height: 31px;
+  width: 29px;
+}
+.fish-left {
+  left: 4%;
+}
+.fish-right {
+  right: 4%;
+}
+.fish-arrow {
+  height: 58px;
+  left: calc(50% - 46px);
+  position: absolute;
+  top: 63px;
+  width: 92px;
+}
+.combine-arrow {
+  height: 58px;
+  left: 19%;
+  position: absolute;
+  top: 88px;
+  width: 40px;
+}
+.fish-group .fish {
+  height: 33px;
+  width: 46px;
+}
+.desk-objects {
+  left: 11%;
+  max-width: 61%;
+  top: 45px;
+}
+.desk-objects .book {
+  height: 45px;
+  width: 46px;
+}
+.desk-objects .pencil {
+  height: 58px;
+  width: 29px;
+}
+.missing-slots {
+  align-items: center;
+  bottom: 30px;
+  max-width: 33%;
+  right: 10%;
+}
+.missing-slots span {
+  border: 3px dashed #f59e0b;
+  border-radius: 10px;
+  height: 34px;
+  width: 34px;
+}
+.scene-motion .departing-birds,
+.scene-replay .departing-birds {
+  animation: story-depart 1.5s ease-in-out infinite alternate;
+}
+.scene-motion .arriving-ducks,
+.scene-replay .arriving-ducks {
+  animation: story-arrive 1.5s ease-in-out infinite alternate;
+}
+.scene-motion .fish-group,
+.scene-replay .fish-group {
+  animation: story-combine 1.5s ease-in-out infinite alternate;
+}
+@keyframes story-depart {
+  to {
+    opacity: 0.68;
+    transform: translate(18px, -15px) rotate(-8deg);
+  }
+}
+@keyframes story-arrive {
+  to {
+    transform: translate(-18px, 20px);
+  }
+}
+@keyframes story-combine {
+  to {
+    transform: translateY(24px);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .scene-motion .departing-birds,
+  .scene-motion .arriving-ducks,
+  .scene-motion .fish-group,
+  .scene-replay .departing-birds,
+  .scene-replay .arriving-ducks,
+  .scene-replay .fish-group {
+    animation: none;
+  }
+}
+@media (max-width: 400px) {
+  .story-scene {
+    min-height: 170px;
+  }
+  .scene-setting {
+    height: 170px;
+  }
+  .story-scene .bird,
+  .story-scene .scene-object {
+    height: 34px;
+    width: 43px;
+  }
+  .perched-birds {
+    left: 22%;
+  }
+  .desk-objects .book {
+    height: 39px;
+    width: 40px;
+  }
+  .desk-objects .pencil {
+    height: 50px;
+    width: 25px;
+  }
 }
 .story-choice-grid {
   display: grid;
