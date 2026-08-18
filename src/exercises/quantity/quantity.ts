@@ -36,13 +36,13 @@ function stageQuantity(
   stage: QuantityStage,
   random: ReturnType<typeof createSeededRandom>,
 ): number {
-  if (stage === "small-groups") return random.int(1, 3);
+  if (stage === "small-groups") return random.int(2, 3);
   if (stage === "structured") return random.int(4, 5);
   if (stage === "frame-to-number" || stage === "number-to-frame")
-    return random.int(1, 5);
+    return random.int(2, 5);
   if (stage === "five-anchor") return random.int(6, 10);
   if (stage === "match") return random.int(2, 9);
-  return random.int(1, 10);
+  return random.int(2, 10);
 }
 
 export function generateQuantityExercise(options: {

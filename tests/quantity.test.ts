@@ -24,7 +24,7 @@ describe("quantity exercises", () => {
   it("keeps generated quantities and intended answers in range", () => {
     for (let seed = 0; seed < 100; seed += 1) {
       const exercise = generateQuantityExercise({ seed });
-      expect(exercise.quantity).toBeGreaterThanOrEqual(1);
+      expect(exercise.quantity).toBeGreaterThanOrEqual(2);
       expect(exercise.quantity).toBeLessThanOrEqual(10);
       expect(evaluateQuantityAnswer(exercise, exercise.quantity).correct).toBe(
         true,

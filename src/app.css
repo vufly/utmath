@@ -682,7 +682,18 @@ h2 {
   opacity: 1;
 }
 .quantity-frame.dot-layout {
-  max-width: 240px;
+  grid-template-columns: repeat(var(--frame-columns), 48px);
+  max-width: none;
+  width: max-content;
+}
+.quantity-frame.dot-layout > button {
+  background: transparent;
+  border: 0;
+  height: 48px;
+  width: 48px;
+}
+.quantity-frame.dot-layout > button.empty-dot {
+  background: transparent;
 }
 .quantity-frame.dice-layout {
   max-width: 220px;
