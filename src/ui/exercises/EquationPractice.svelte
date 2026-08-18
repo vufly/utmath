@@ -42,7 +42,7 @@
       ? ""
       : numberLineSteps === 0
         ? `Đứng yên ở ${numberLineStart}.`
-        : `Bắt đầu ở ${numberLineStart}. ${numberLineEnd > numberLineStart ? "Tiến" : "Lùi"} ${numberLineSteps} bước trên đường số.`,
+        : `Bắt đầu ở ${numberLineStart}. ${numberLineEnd > numberLineStart ? "Tiến" : "Lùi"} ${numberLineSteps} bước trên dãy số.`,
   );
   const missingVisual = $derived.by(() => {
     if (exercise.kind !== "missing-number" || hint?.type !== "visual")
@@ -92,9 +92,9 @@
         <p>{typeof hint.payload === "string" ? hint.payload : "Con thử nhìn mối liên hệ giữa các số nhé."}</p>
         {#if hint.type === "visual" && numberLineStart !== undefined && numberLineEnd !== undefined}
           <p class="number-line-instruction">{numberLineInstruction}</p>
-          <div class="strategy-number-line" aria-label={`Từ ${numberLineStart} đến ${numberLineEnd}, ${numberLineSteps} bước`}>
+          <div class="strategy-number-line" aria-label={`Từ ${numberLineStart} đến ${numberLineEnd}, ${numberLineSteps} bước trên dãy số`}>
             {#each Array(11) as _, value}
-              <span class:line-start={value === numberLineStart} class:line-end={value === numberLineEnd} class:line-step={value > Math.min(numberLineStart, numberLineEnd) && value < Math.max(numberLineStart, numberLineEnd)}>{value}</span>
+              <span class:line-start={value === numberLineStart} class:line-end={value === numberLineEnd} class:line-step={value > Math.min(numberLineStart, numberLineEnd) && value < Math.max(numberLineStart, numberLineEnd)}>{value}{#if (numberLineEnd > numberLineStart && value >= numberLineStart && value < numberLineEnd) || (numberLineEnd < numberLineStart && value <= numberLineStart && value > numberLineEnd)}<svg class:backward={numberLineEnd < numberLineStart} class="step-arc" aria-hidden="true" viewBox="0 0 40 18"><path d="M2 3Q20 17 35 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-width="2.5" /><path d="m30 2 6 3-5 5" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" /></svg>{/if}</span>
             {/each}
           </div>
         {/if}

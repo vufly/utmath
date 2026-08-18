@@ -21,14 +21,13 @@ describe("EquationPractice", () => {
     });
 
     expect(
-      screen.getByText(
-        `Bắt đầu ở ${exercise.left}. Tiến 2 bước trên đường số.`,
-      ),
+      screen.getByText(`Bắt đầu ở ${exercise.left}. Tiến 2 bước trên dãy số.`),
     ).toBeInTheDocument();
     expect(
       screen.getByLabelText(
-        `Từ ${exercise.left} đến ${exercise.result}, 2 bước`,
+        `Từ ${exercise.left} đến ${exercise.result}, 2 bước trên dãy số`,
       ),
     ).toBeInTheDocument();
+    expect(document.querySelectorAll(".step-arc")).toHaveLength(2);
   });
 });
