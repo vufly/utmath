@@ -202,6 +202,25 @@ describe("StoryPractice", () => {
     ).toBeInTheDocument();
   });
 
+  it("makes a visual take-away hint explain the departing action", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "take-away",
+      stage: "direction",
+    });
+    render(StoryPractice, {
+      exercise,
+      hint: { level: 2, type: "visual", payload: {} },
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.getByText("Có chim bay đi, nên số chim còn lại ít hơn lúc đầu."),
+    ).toBeInTheDocument();
+  });
+
   it("renders arriving ducks at a pond and re-emphasizes a wrong action", () => {
     const exercise = generateStoryExercise({
       seed: 1,

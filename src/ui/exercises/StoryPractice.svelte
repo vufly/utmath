@@ -117,6 +117,15 @@
                     ? `Cần thêm bao nhiêu ${objectLabel}?`
                     : "Có tất cả bao nhiêu?",
   );
+  const hintText = $derived(
+    typeof hint?.payload === "string"
+      ? hint.payload
+      : exercise.storyType === "take-away"
+        ? "Có chim bay đi, nên số chim còn lại ít hơn lúc đầu."
+        : exercise.storyType === "missing-part"
+          ? `Cần thêm vào để đủ ${exercise.total} ${objectLabel}.`
+          : "Có thêm vào, nên số lượng sau đó nhiều hơn lúc đầu.",
+  );
 
   function submitBuild(): void {
     if (
@@ -151,7 +160,7 @@
           : `${exercise.startCount} ${objectLabel}. ${exercise.changeCount} ${objectLabel} ${isAdding ? actionLabel : "bay đi"}.`}
     </p>
     <StoryScene {exercise} replay={replayAction} />
-    {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{typeof hint.payload === "string" ? hint.payload : "Nhìn điều đang xảy ra trong tranh nhé."}</p></aside>{/if}
+    {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{hintText}</p></aside>{/if}
     {#if feedback}<p class:success={completed} class="answer-feedback" role="status">{feedback}</p>{/if}
     {#if showFactFamily}
       <section class="story-fact-family" aria-label="Các phép tính cùng liên kết số">
