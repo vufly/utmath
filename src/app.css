@@ -314,7 +314,17 @@ h2 {
   grid-template-columns: repeat(3, 1fr);
 }
 .parent-actions {
+  align-items: stretch;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 12px;
   margin-top: 24px;
+}
+.parent-actions .secondary-action.compact {
+  flex: 1 1 180px;
+}
+.parent-actions .quiet-button.compact {
+  flex: 0 0 auto;
 }
 .exercise-page {
   display: grid;

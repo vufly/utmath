@@ -17,11 +17,23 @@
   const bondState = $derived(skillStates.find((state) => state.skillId === 'B.bond.5'));
   const completedToday = $derived(sessions.some((session) => session.type === 'today' && session.completed));
 
+  function stageLabel(stage?: SkillState['stage']): string {
+    if (stage === 'learning') return 'Đang học';
+    if (stage === 'practicing') return 'Đang luyện';
+    if (stage === 'stable') return 'Đang vững';
+    if (stage === 'review') return 'Cần ôn lại';
+    if (stage === 'locked') return 'Tạm dừng';
+    if (stage === 'new') return 'Mới bắt đầu';
+    return 'Chưa bắt đầu';
+  }
+
   function moduleStatus(module: string): string {
     const states = skillStates.filter((state) => state.skillId.startsWith(`${module}.`));
     if (states.length === 0) return 'Chưa bắt đầu';
     if (states.some((state) => state.stage === 'stable')) return 'Đang vững';
-    return 'Đang học';
+    if (states.some((state) => state.stage === 'practicing')) return 'Đang luyện';
+    if (states.some((state) => state.stage === 'learning')) return 'Đang học';
+    return stageLabel(states[0]?.stage);
   }
 </script>
 
@@ -39,7 +51,7 @@
     <article><strong>{completedToday ? 'Đã xong' : 'Chưa học'}</strong><span>Bài học hôm nay</span></article>
     <article><strong>{rewards.currentStreak}</strong><span>Ngày liên tiếp</span></article>
     <article><strong>{moduleStatus('A')}</strong><span>Nhìn nhanh số lượng</span></article>
-    <article><strong>{bondState?.stage ?? 'Chưa bắt đầu'}</strong><span>Liên kết số 5</span></article>
+    <article><strong>{stageLabel(bondState?.stage)}</strong><span>Liên kết số 5</span></article>
     <article><strong>{moduleStatus('C')}</strong><span>Tính nhẩm</span></article>
     <article><strong>{moduleStatus('D')}</strong><span>Số còn thiếu</span></article>
   </section>
