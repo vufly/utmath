@@ -355,6 +355,8 @@ h2 {
   font-weight: 700;
 }
 .answer-panel {
+  display: grid;
+  gap: 16px;
   margin-top: 18px;
 }
 .hint-button {
@@ -370,7 +372,6 @@ h2 {
   display: grid;
   gap: 10px;
   grid-template-columns: repeat(6, minmax(0, 1fr));
-  margin-top: 12px;
 }
 .number-grid button {
   background: #fff;
