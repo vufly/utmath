@@ -120,8 +120,15 @@ function expectedStoryAnswer(exercise: StoryExercise): unknown {
     return `${exercise.startCount},${exercise.changeCount}`;
   if (exercise.stage === "equation-choice" || exercise.stage === "build")
     return equationFor(exercise);
-  if (exercise.stage === "parts-whole") return exercise.total;
+  if (exercise.stage === "parts-whole") return storyAnswer(exercise);
   return storyAnswer(exercise);
+}
+
+function storyAnswerLabel(exercise: StoryExercise): string {
+  const answer = expectedStoryAnswer(exercise);
+  if (answer === "increase") return "tăng lên";
+  if (answer === "decrease") return "giảm đi";
+  return String(answer);
 }
 
 export function evaluateStoryAnswer(
@@ -167,6 +174,6 @@ export function storyHint(exercise: StoryExercise, level: HintLevel): Hint {
   return {
     level,
     type: "text",
-    payload: `Đáp án là ${expectedStoryAnswer(exercise)}.`,
+    payload: `Đáp án là ${storyAnswerLabel(exercise)}.`,
   };
 }

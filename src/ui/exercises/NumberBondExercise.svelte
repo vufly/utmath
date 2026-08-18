@@ -42,8 +42,27 @@
           ? "Từ hai phần, tổng là bao nhiêu?"
           : exercise.unknown === "whole"
             ? `${exercise.partA} và ${exercise.partB} ghép lại tạo thành số nào?`
-            : `Hai phần ghép lại tạo thành ${whole}.`,
+             : `Hai phần ghép lại tạo thành ${whole}.`,
   );
+  const completedFactFamily = $derived.by(() => {
+    const additions = [
+      `${partA} + ${partB} = ${whole}`,
+      `${partB} + ${partA} = ${whole}`,
+    ];
+    const subtractions = [
+      `${whole} − ${partB} = ${partA}`,
+      `${whole} − ${partA} = ${partB}`,
+    ];
+    const startsWithAddition =
+      exercise.presentation === "combine" ||
+      exercise.presentation === "fact-family" ||
+      exercise.unknown === "whole";
+
+    if (startsWithAddition) return [...additions, ...subtractions];
+    return exercise.unknown === "part-a"
+      ? [subtractions[0], subtractions[1], additions[0], additions[1]]
+      : [subtractions[1], subtractions[0], additions[0], additions[1]];
+  });
 </script>
 
 <main class="exercise-page page">
@@ -95,10 +114,7 @@
     {#if feedback.includes("Đúng")}
       <section class="bond-fact-family" aria-label="Các phép tính cùng liên kết số">
         <strong>Con đọc to bốn phép tính để nhớ nhé:</strong>
-        <span>{whole} − {partB} = {partA}</span>
-        <span>{whole} − {partA} = {partB}</span>
-        <span>{partB} + {partA} = {whole}</span>
-        <span>{partA} + {partB} = {whole}</span>
+        {#each completedFactFamily as fact}<span>{fact}</span>{/each}
       </section>
     {/if}
 

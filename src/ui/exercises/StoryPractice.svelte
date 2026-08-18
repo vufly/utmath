@@ -19,6 +19,12 @@
   const isAdding = $derived(exercise.storyType !== "take-away");
   const operator = $derived(isAdding ? "+" : "-");
   const completed = $derived(feedback.includes("Đúng"));
+  const showFactFamily = $derived(
+    completed &&
+      (exercise.stage === "equation-choice" ||
+        exercise.stage === "build" ||
+        exercise.stage === "result"),
+  );
   const replayAction = $derived(Boolean(feedback) && !completed);
   const objectLabel = $derived(
     exercise.objectKind === "bird"
@@ -43,13 +49,25 @@
   const equation = $derived(
     `${exercise.startCount}${operator}${exercise.changeCount}=${exercise.total}`,
   );
-  const familyWhole = $derived(
-    isAdding ? (exercise.total ?? 0) : (exercise.startCount ?? 0),
-  );
-  const familyPartA = $derived(
-    isAdding ? (exercise.startCount ?? 0) : (exercise.total ?? 0),
-  );
-  const familyPartB = $derived(exercise.changeCount ?? 0);
+  const factFamily = $derived.by(() => {
+    const start = exercise.startCount ?? 0;
+    const change = exercise.changeCount ?? 0;
+    const total = exercise.total ?? 0;
+
+    return isAdding
+      ? [
+          `${start} + ${change} = ${total}`,
+          `${change} + ${start} = ${total}`,
+          `${total} − ${change} = ${start}`,
+          `${total} − ${start} = ${change}`,
+        ]
+      : [
+          `${start} − ${change} = ${total}`,
+          `${start} − ${total} = ${change}`,
+          `${total} + ${change} = ${start}`,
+          `${change} + ${total} = ${start}`,
+        ];
+  });
   const numberChoices = $derived([
     ...new Set([
       exercise.startCount ?? 0,
@@ -67,11 +85,15 @@
   ]);
   const prompt = $derived(
     exercise.stage === "direction"
-      ? "Số lượng đang tăng hay giảm?"
+      ? exercise.storyType === "missing-part"
+        ? "Số lượng cần tăng hay giảm?"
+        : "Số lượng đang tăng hay giảm?"
       : exercise.stage === "before-after"
         ? "Sau khi thay đổi, nhiều hơn hay ít hơn?"
         : exercise.stage === "parts-whole"
-          ? "Hai phần ghép lại tạo thành số nào?"
+          ? exercise.storyType === "missing-part"
+            ? `Cần thêm bao nhiêu ${objectLabel} để đủ ${exercise.total}?`
+            : "Hai phần ghép lại tạo thành số nào?"
           : exercise.stage === "operator"
             ? "Nên dùng dấu nào?"
             : exercise.stage === "numbers"
@@ -120,19 +142,16 @@
     <StoryScene {exercise} replay={replayAction} />
     {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{typeof hint.payload === "string" ? hint.payload : "Nhìn điều đang xảy ra trong tranh nhé."}</p></aside>{/if}
     {#if feedback}<p class:success={completed} class="answer-feedback" role="status">{feedback}</p>{/if}
-    {#if completed}
+    {#if showFactFamily}
       <section class="story-fact-family" aria-label="Các phép tính cùng liên kết số">
         <strong>Con đọc to bốn phép tính để nhớ nhé:</strong>
-        <span>{familyWhole} − {familyPartB} = {familyPartA}</span>
-        <span>{familyWhole} − {familyPartA} = {familyPartB}</span>
-        <span>{familyPartB} + {familyPartA} = {familyWhole}</span>
-        <span>{familyPartA} + {familyPartB} = {familyWhole}</span>
+        {#each factFamily as fact}<span>{fact}</span>{/each}
       </section>
     {/if}
   </section>
   <section class="answer-panel" aria-label="Chọn câu trả lời">
     {#if completed}
-      <button class="primary-action compact" type="button" onclick={onNext}>Con đã đọc xong, tiếp tục</button>
+      <button class="primary-action compact" type="button" onclick={onNext}>{showFactFamily ? "Con đã đọc xong, tiếp tục" : "Tiếp tục"}</button>
     {:else}
       <button class="hint-button" type="button" onclick={onHint}>Gợi ý</button>
       {#if exercise.stage === "direction" || exercise.stage === "before-after"}

@@ -890,11 +890,11 @@ h2 {
   top: 13px;
 }
 .entering-arrow {
-  height: 70px;
+  height: 90px;
   position: absolute;
   right: 22%;
-  top: 33px;
-  width: 100px;
+  top: 10px;
+  width: 120px;
 }
 .basket-fruit {
   left: 25%;
@@ -927,11 +927,11 @@ h2 {
   top: 10px;
 }
 .fish-arrow {
-  height: 70px;
+  height: 90px;
   position: absolute;
   right: 22%;
-  top: 33px;
-  width: 100px;
+  top: 10px;
+  width: 120px;
 }
 .combine-arrow {
   height: 58px;
@@ -946,9 +946,11 @@ h2 {
   width: 46px;
 }
 .desk-objects {
-  left: 11%;
-  max-width: 61%;
-  top: 45px;
+  align-content: center;
+  height: 90px;
+  left: 15%;
+  max-width: 34%;
+  top: 50px;
 }
 .desk-objects .book {
   height: 45px;
@@ -960,15 +962,19 @@ h2 {
 }
 .missing-slots {
   align-items: center;
-  bottom: 30px;
-  max-width: 33%;
-  right: 10%;
+  max-width: 38%;
+  right: 15%;
+  top: 68px;
 }
 .missing-slots span {
   border: 3px dashed #f59e0b;
-  border-radius: 10px;
-  height: 34px;
-  width: 34px;
+  border-radius: 8px;
+  height: 52px;
+  width: 27px;
+}
+.missing-slots.book-slots span {
+  height: 40px;
+  width: 39px;
 }
 .scene-motion .departing-birds,
 .scene-replay .departing-birds {

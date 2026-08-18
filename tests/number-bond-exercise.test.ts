@@ -127,7 +127,7 @@ describe("NumberBondExercise", () => {
       partA: number;
       partB: number;
     };
-    render(NumberBondExercise, {
+    const { container } = render(NumberBondExercise, {
       exercise: split,
       answered: 0,
       feedback: "Đúng rồi!",
@@ -145,10 +145,44 @@ describe("NumberBondExercise", () => {
     expect(
       screen.getByText("Con đọc to bốn phép tính để nhớ nhé:"),
     ).toBeInTheDocument();
+    expect(
+      Array.from(
+        container.querySelectorAll(".bond-fact-family span"),
+        (element) => element.textContent,
+      ).slice(0, 2),
+    ).toEqual([
+      `${params.whole} − ${params.partA} = ${params.partB}`,
+      `${params.whole} − ${params.partB} = ${params.partA}`,
+    ]);
     expect(screen.queryByRole("button", { name: "0" })).not.toBeInTheDocument();
     fireEvent.click(
       screen.getByRole("button", { name: "Con đã đọc xong, tiếp tục" }),
     );
     expect(onNext).toHaveBeenCalledOnce();
+  });
+
+  it("starts read-aloud facts with the equation from an addition task", () => {
+    const exercise = generateNumberBondExercise({ seed: 1, stage: "combine" });
+    const params = exercise.generator!.params as {
+      whole: number;
+      partA: number;
+      partB: number;
+    };
+    const { container } = render(NumberBondExercise, {
+      exercise,
+      answered: 0,
+      feedback: "Đúng rồi!",
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+    const facts = Array.from(
+      container.querySelectorAll(".bond-fact-family span"),
+      (element) => element.textContent,
+    );
+
+    expect(facts.slice(0, 2)).toEqual([
+      `${params.partA} + ${params.partB} = ${params.whole}`,
+      `${params.partB} + ${params.partA} = ${params.whole}`,
+    ]);
   });
 });

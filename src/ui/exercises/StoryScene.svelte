@@ -64,7 +64,7 @@
     <div class="scene-objects pond-ducks">
       {#each Array(startCount) as _}<Duck variant="blue" />{/each}
     </div>
-    <svg class="scene-arrow entering-arrow" viewBox="0 0 100 70" aria-hidden="true"><path d="M88 18C58 22 48 54 20 54M36 40 20 54 36 68" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
+    <svg class="scene-arrow entering-arrow" viewBox="0 0 120 90" aria-hidden="true"><path d="M108 12C77 5 56 6 42 15 28 24 32 46 20 68M21 48 20 68 35 56" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
     <div class="scene-objects arriving-ducks">
       {#each Array(changeCount) as _}<Duck variant="yellow" />{/each}
     </div>
@@ -90,16 +90,11 @@
     <div class="scene-objects pond-fish">
       {#each Array(startCount) as _}<Fish variant="blue" />{/each}
     </div>
-    <svg class="scene-arrow fish-arrow" viewBox="0 0 100 70" aria-hidden="true"><path d="M88 18C58 22 48 54 20 54M36 40 20 54 36 68" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
+    <svg class="scene-arrow fish-arrow" viewBox="0 0 120 90" aria-hidden="true"><path d="M108 12C77 5 56 6 42 15 28 24 32 46 20 68M21 48 20 68 35 56" fill="none" stroke="#d97706" stroke-linecap="round" stroke-linejoin="round" stroke-width="5" /></svg>
     <div class="scene-objects joining-fish">
       {#each Array(changeCount) as _}<Fish variant="yellow" />{/each}
     </div>
   {:else}
-    <svg class="scene-setting desk-setting" viewBox="0 0 360 180" aria-hidden="true">
-      <rect x="28" y="26" width="304" height="103" rx="10" fill="#fef3c7" stroke="#92400e" stroke-width="4" />
-      <path d="M15 130h330" stroke="#92400e" stroke-linecap="round" stroke-width="18" />
-      <path d="M56 149v24m248-24v24" stroke="#92400e" stroke-linecap="round" stroke-width="10" />
-    </svg>
     <div class="scene-objects desk-objects">
       {#if exercise.sceneId === "book-desk"}
         {#each Array(startCount) as _}<Book variant="blue" />{/each}
@@ -107,7 +102,7 @@
         {#each Array(startCount) as _}<Pencil variant="blue" />{/each}
       {/if}
     </div>
-    <div class="scene-objects missing-slots" aria-hidden="true">
+    <div class:book-slots={exercise.sceneId === "book-desk"} class="scene-objects missing-slots" aria-hidden="true">
       {#each Array(changeCount) as _}<span></span>{/each}
     </div>
   {/if}

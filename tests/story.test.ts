@@ -19,12 +19,14 @@ describe("picture story exercises", () => {
   });
 
   it("teaches change direction before answer", () => {
-    const exercise = generateStoryExercise({ seed: 2, storyType: "take-away" });
+    const exercise = generateStoryExercise({
+      seed: 2,
+      storyType: "take-away",
+      stage: "direction",
+    });
     expect(storyHint(exercise, 1).payload).toContain("giảm");
     expect(storyHint(exercise, 2).type).toBe("visual");
-    expect(storyHint(exercise, 3).payload).toBe(
-      `Đáp án là ${storyAnswer(exercise)}.`,
-    );
+    expect(storyHint(exercise, 3).payload).toBe("Đáp án là giảm đi.");
   });
 
   it("supports all semantic story stages and story types", () => {
@@ -52,6 +54,19 @@ describe("picture story exercises", () => {
       ).correct,
     ).toBe(true);
     expect(storyAnswer(missing)).toBe(missing.changeCount);
+  });
+
+  it("asks for the missing part at the parts-whole stage", () => {
+    const missing = generateStoryExercise({
+      seed: 3,
+      storyType: "missing-part",
+      stage: "parts-whole",
+    });
+
+    expect(evaluateStoryAnswer(missing, missing.changeCount).correct).toBe(
+      true,
+    );
+    expect(evaluateStoryAnswer(missing, missing.total).correct).toBe(false);
   });
 
   it("uses a story-compatible semantic scene with exact counts", () => {

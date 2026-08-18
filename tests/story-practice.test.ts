@@ -91,6 +91,54 @@ describe("StoryPractice", () => {
     expect(onNext).toHaveBeenCalledOnce();
   });
 
+  it("puts the stated addition first, followed by its related addition", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "add-to",
+      stage: "result",
+    });
+    const { container } = render(StoryPractice, {
+      exercise,
+      feedback: "Đúng rồi!",
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+    const facts = Array.from(
+      container.querySelectorAll(".story-fact-family span"),
+      (element) => element.textContent,
+    );
+
+    expect(facts).toEqual([
+      `${exercise.startCount} + ${exercise.changeCount} = ${exercise.total}`,
+      `${exercise.changeCount} + ${exercise.startCount} = ${exercise.total}`,
+      `${exercise.total} − ${exercise.changeCount} = ${exercise.startCount}`,
+      `${exercise.total} − ${exercise.startCount} = ${exercise.changeCount}`,
+    ]);
+  });
+
+  it("does not show a fact family after a direction-only answer", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "add-to",
+      stage: "direction",
+    });
+    render(StoryPractice, {
+      exercise,
+      feedback: "Đúng rồi!",
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.queryByText("Con đọc to bốn phép tính để nhớ nhé:"),
+    ).not.toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Tiếp tục" }),
+    ).toBeInTheDocument();
+  });
+
   it("renders a tree scene with remaining and departing birds", () => {
     const exercise = generateStoryExercise({
       seed: 1,
@@ -210,5 +258,45 @@ describe("StoryPractice", () => {
       second.container.querySelectorAll(".missing-slots span"),
     ).toHaveLength(missing.changeCount ?? 0);
     expect(second.container.querySelectorAll(".bird")).toHaveLength(0);
+  });
+
+  it("uses a missing-part question with object-shaped empty frames", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "missing-part",
+      stage: "parts-whole",
+    });
+    render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    const objectLabel =
+      exercise.objectKind === "book" ? "quyển sách" : "bút chì";
+    expect(
+      screen.getByRole("heading", {
+        name: `Cần thêm bao nhiêu ${objectLabel} để đủ ${exercise.total}?`,
+      }),
+    ).toBeInTheDocument();
+  });
+
+  it("uses needed-change wording for a missing-part direction question", () => {
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "missing-part",
+      stage: "direction",
+    });
+    render(StoryPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.getByRole("heading", { name: "Số lượng cần tăng hay giảm?" }),
+    ).toBeInTheDocument();
   });
 });
