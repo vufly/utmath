@@ -32,7 +32,8 @@ describe("TrianglePractice", () => {
     await fireEvent.click(screen.getByRole("button", { name: "Lớn" }));
     await fireEvent.click(container.querySelector("polygon")!);
     await fireEvent.click(screen.getByRole("button", { name: "Kiểm tra" }));
-    expect(onAnswer).toHaveBeenCalledWith({
+    const submission = onAnswer.mock.calls[0]?.[0];
+    expect(submission).toEqual({
       count: 8,
       selectedIds: [
         "a-b-d",
@@ -45,6 +46,7 @@ describe("TrianglePractice", () => {
         "whole",
       ],
     });
+    expect(() => structuredClone(submission)).not.toThrow();
   });
 
   it("switches size filters so composite triangles remain tappable", async () => {
@@ -65,5 +67,29 @@ describe("TrianglePractice", () => {
     expect(
       screen.getAllByRole("button", { name: "Chọn tam giác large" }),
     ).toHaveLength(4);
+  });
+
+  it("clears selected triangles when the next exercise loads", async () => {
+    const first = generateTriangleExercise({
+      seed: 1,
+      definitionId: "worksheet-wedge",
+    });
+    const second = generateTriangleExercise({
+      seed: 2,
+      definitionId: "four-in-rectangle",
+    });
+    const view = render(TrianglePractice, {
+      exercise: first,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    await fireEvent.click(view.container.querySelector("polygon")!);
+    expect(screen.getByText("1")).toBeInTheDocument();
+    await view.rerender({ exercise: second });
+
+    expect(screen.getByText("0")).toBeInTheDocument();
+    expect(view.container.querySelectorAll("polygon")).toHaveLength(4);
   });
 });

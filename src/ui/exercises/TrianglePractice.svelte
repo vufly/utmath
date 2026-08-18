@@ -28,6 +28,13 @@
     );
   });
 
+  $effect(() => {
+    exercise.id;
+    selectedIds = [];
+    activeSize = "small";
+    selectionMessage = "";
+  });
+
   function selectTriangle(id: string): void {
     if (selectedIds.includes(id)) {
       selectionMessage = "Con đã tìm tam giác này rồi.";
@@ -39,8 +46,9 @@
       nextSelectedIds.includes(triangle.id),
     );
     if (foundAllVisible && nextSize) {
+      const finishedSize = activeSize;
       activeSize = nextSize;
-      selectionMessage = `Con đã tìm hết tam giác ${activeSize === "large" ? "nhỏ" : "vừa"}. Bây giờ tìm tam giác ${nextSize === "large" ? "lớn" : "vừa"}.`;
+      selectionMessage = `Con đã tìm hết tam giác ${finishedSize === "small" ? "nhỏ" : "vừa"}. Bây giờ tìm tam giác ${nextSize === "large" ? "lớn" : "vừa"}.`;
       return;
     }
     selectionMessage = "";
@@ -58,5 +66,5 @@
     {#if hint}<aside class="hint-card" aria-live="polite"><strong>Gợi ý</strong><p>{typeof hint.payload === "string" ? hint.payload : "Nhìn phần được viền, rồi tìm tam giác chưa chọn nhé."}</p></aside>{/if}
     {#if feedback}<p class:success={feedback.includes("Đúng")} class="answer-feedback" role="status">{feedback}</p>{/if}
   </section>
-  <section class="answer-panel" aria-label={exercise.answerMode === "select" ? "Kiểm tra tam giác" : "Chọn câu trả lời"}><button class="hint-button" type="button" onclick={onHint}>Gợi ý</button>{#if exercise.answerMode === "select"}<button class="primary-action compact" type="button" onclick={() => onAnswer({ count: selectedIds.length, selectedIds })}>Kiểm tra</button>{:else}<div class="number-grid">{#each Array(11) as _, value}<button type="button" onclick={() => onAnswer(value)}>{value}</button>{/each}</div>{/if}</section>
+  <section class="answer-panel" aria-label={exercise.answerMode === "select" ? "Kiểm tra tam giác" : "Chọn câu trả lời"}><button class="hint-button" type="button" onclick={onHint}>Gợi ý</button>{#if exercise.answerMode === "select"}<button class="primary-action compact" type="button" onclick={() => onAnswer({ count: selectedIds.length, selectedIds: [...selectedIds] })}>Kiểm tra</button>{:else}<div class="number-grid">{#each Array(11) as _, value}<button type="button" onclick={() => onAnswer(value)}>{value}</button>{/each}</div>{/if}</section>
 </main>
