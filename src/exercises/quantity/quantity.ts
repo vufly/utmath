@@ -190,7 +190,9 @@ export function quantityHint(
       type: "text",
       payload:
         exercise.layout === "dice"
-          ? "Con nhìn 4 chấm ở góc và chấm ở giữa nhé."
+          ? exercise.quantity === 5
+            ? "Con nhìn 4 chấm ở góc và chấm ở giữa nhé."
+            : "Con nhìn 4 chấm ở bốn góc nhé."
           : exercise.layout === "domino"
             ? "Con nhìn từng nửa của quân đô-mi-nô nhé."
             : exercise.layout === "five-frame"
@@ -207,16 +209,16 @@ export function quantityHint(
             (_, index) => index + 1,
           ).join(", ")}.`
         : exercise.layout === "dice"
-          ? `4 chấm ở góc và 1 chấm ở giữa, nên là ${exercise.quantity}.`
+          ? exercise.quantity === 5
+            ? "4 chấm ở góc và 1 chấm ở giữa. Có tất cả mấy chấm?"
+            : "Con thử đếm 4 chấm ở bốn góc nhé."
           : exercise.layout === "domino"
-            ? `Nhìn hai nửa: ${Math.floor(exercise.quantity / 2)} và ${
-                exercise.quantity - Math.floor(exercise.quantity / 2)
-              } chấm.`
+            ? "Con đếm một nửa trước, rồi đếm nửa còn lại nhé."
             : exercise.layout === "five-frame"
-              ? `Có ${exercise.quantity} ô đã có chấm trong khung 5.`
+              ? "Con đếm các ô có chấm từ trái sang phải nhé."
               : `Hàng trên có 5 chấm, hàng dưới có ${
                   exercise.quantity - 5
-                } chấm. 5 và ${exercise.quantity - 5} là ${exercise.quantity}.`;
+                } chấm. 5 + ${exercise.quantity - 5} = ?`;
     return { level, type: "visual", payload };
   }
   if (exercise.quantity > 5) {
