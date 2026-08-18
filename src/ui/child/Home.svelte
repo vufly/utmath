@@ -24,7 +24,7 @@
     </div>
     <p class="eyebrow">Hôm nay mình chơi với số nhé</p>
     <h1 id="welcome-title">Chào {profile.displayName}!</h1>
-    <p class="intro">Mỗi bài là một trò chơi nhỏ. Con chọn bài mình thích nhé!</p>
+    <p class="intro">Mỗi bài ngắn giúp con hiểu các con số và phép tính từng bước một.</p>
   </section>
 
   <section class="reward-strip" aria-label="Phần thưởng">
