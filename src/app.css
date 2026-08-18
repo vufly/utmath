@@ -714,6 +714,28 @@ h2 {
   font-size: 1.125rem;
   font-weight: 700;
 }
+.flash-countdown {
+  background: #dbeafe;
+  border: 2px solid #172554;
+  border-radius: 999px;
+  height: 12px;
+  margin: 0 auto 20px;
+  max-width: 260px;
+  overflow: hidden;
+}
+.flash-countdown i {
+  animation: flash-countdown var(--flash-duration) linear forwards;
+  background: #2563eb;
+  display: block;
+  height: 100%;
+  transform-origin: left;
+  width: 100%;
+}
+@keyframes flash-countdown {
+  to {
+    transform: scaleX(0);
+  }
+}
 .quantity-match-options {
   display: grid;
   gap: 12px;

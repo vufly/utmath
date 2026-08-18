@@ -44,4 +44,20 @@ describe("QuantityPractice", () => {
 
     expect(onAnswer).toHaveBeenCalledWith(7);
   });
+
+  it("shows a non-numeric countdown while a flash card is visible", () => {
+    const exercise = generateQuantityExercise({
+      seed: 1,
+      quantity: 4,
+      stage: "flash",
+    });
+    render(QuantityPractice, {
+      exercise,
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(screen.getByLabelText("Thời gian nhìn")).toBeInTheDocument();
+  });
 });

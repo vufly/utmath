@@ -62,6 +62,7 @@
   <section class="exercise-card" aria-labelledby="quantity-title">
     <p class="eyebrow">Nhìn nhanh số lượng</p>
     <h1 id="quantity-title">{exercise.answerMode === "frame" ? `Đặt ${exercise.quantity} chấm vào khung` : exercise.answerMode === "match" ? `Tìm hình có ${exercise.quantity} chấm` : exercise.flashDurationMs && flashVisible ? "Nhìn thật nhanh nhé" : "Có bao nhiêu chấm?"}</h1>
+    {#if exercise.flashDurationMs && flashVisible}<div class="flash-countdown" aria-label="Thời gian nhìn" style={`--flash-duration: ${exercise.flashDurationMs}ms`}><i></i></div>{/if}
     {#if exercise.answerMode === "match"}
       <div class="quantity-match-options" aria-label="Chọn hình đúng">
         {#each exercise.matchChoices ?? [] as choice}
