@@ -50,7 +50,10 @@ describe("quantity exercises", () => {
   it("provides visual support before revealing answer", () => {
     const exercise = generateQuantityExercise({ seed: 1, quantity: 6 });
     expect(quantityHint(exercise, 1).type).toBe("text");
-    expect(quantityHint(exercise, 2).type).toBe("visual");
+    expect(quantityHint(exercise, 2)).toMatchObject({
+      type: "visual",
+      payload: "Hàng trên có 5 chấm, hàng dưới có 1 chấm. 5 và 1 là 6.",
+    });
     expect(quantityHint(exercise, 3).payload).toBe(
       "Có 5 chấm ở hàng trên và 1 chấm ở hàng dưới, là 6.",
     );

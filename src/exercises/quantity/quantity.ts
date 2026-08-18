@@ -199,15 +199,26 @@ export function quantityHint(
                 ? "Con nhìn hàng trên có 5 chấm, rồi nhìn hàng dưới nhé."
                 : "Con nhìn các chấm cùng lúc nhé.",
     };
-  if (level === 2)
-    return {
-      level,
-      type: "visual",
-      payload: {
-        quantity: exercise.quantity,
-        representation: exercise.representation,
-      },
-    };
+  if (level === 2) {
+    const payload =
+      exercise.layout === "dots"
+        ? `Con chỉ từng chấm: ${Array.from(
+            { length: exercise.quantity },
+            (_, index) => index + 1,
+          ).join(", ")}.`
+        : exercise.layout === "dice"
+          ? `4 chấm ở góc và 1 chấm ở giữa, nên là ${exercise.quantity}.`
+          : exercise.layout === "domino"
+            ? `Nhìn hai nửa: ${Math.floor(exercise.quantity / 2)} và ${
+                exercise.quantity - Math.floor(exercise.quantity / 2)
+              } chấm.`
+            : exercise.layout === "five-frame"
+              ? `Có ${exercise.quantity} ô đã có chấm trong khung 5.`
+              : `Hàng trên có 5 chấm, hàng dưới có ${
+                  exercise.quantity - 5
+                } chấm. 5 và ${exercise.quantity - 5} là ${exercise.quantity}.`;
+    return { level, type: "visual", payload };
+  }
   if (exercise.quantity > 5) {
     return {
       level,
