@@ -66,4 +66,16 @@ describe("number bond exercises", () => {
     expect(numberBondHint(exercise, 1).type).toBe("text");
     expect(numberBondHint(exercise, 2).type).toBe("visual");
   });
+
+  it("uses equivalent equations to scaffold a split group", () => {
+    const exercise = generateNumberBondExercise({ seed: 1, stage: "split" });
+    const params = exercise.generator!.params;
+
+    expect(numberBondHint(exercise, 1).payload).toBe(
+      `${params.whole} − ${params.partA} = ?`,
+    );
+    expect(numberBondHint(exercise, 2).payload).toContain(
+      `${params.partA} + ? = ${params.whole}`,
+    );
+  });
 });

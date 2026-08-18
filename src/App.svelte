@@ -267,7 +267,10 @@
       await finishSession();
       return;
     }
-    window.setTimeout(refreshExercise, 450);
+    window.setTimeout(
+      refreshExercise,
+      currentExercise.kind === 'part-whole' ? 2200 : 450,
+    );
   }
 
   function showHint(): void {

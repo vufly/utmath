@@ -89,12 +89,21 @@
     {#if feedback}
       <p class:success={feedback.includes("Đúng")} class="answer-feedback" role="status">{feedback}</p>
     {/if}
+    {#if feedback.includes("Đúng")}
+      <section class="bond-fact-family" aria-label="Các phép tính cùng liên kết số">
+        <strong>Cùng một liên kết số:</strong>
+        <span>{whole} − {partB} = {partA}</span>
+        <span>{whole} − {partA} = {partB}</span>
+        <span>{partB} + {partA} = {whole}</span>
+        <span>{partA} + {partB} = {whole}</span>
+      </section>
+    {/if}
 
     {#if hint}
       <aside class="hint-card" aria-live="polite">
         <strong>Gợi ý</strong>
         {#if hintFrameData}
-          <p>{hint.level === 1 ? typeof hint.payload === "string" ? hint.payload : "Con thử nhìn hai phần trong sơ đồ nhé." : hint.level === 2 ? typeof knownPart === "number" ? "Nhìn các chấm theo hai màu. Phần màu xanh lá là phần còn thiếu." : "Nhìn các chấm theo hai màu. Ghép hai phần lại để tìm số ở trên." : `Đáp án là ${hintAnswer}.`}</p>
+          <p>{typeof hint.payload === "string" ? hint.payload : hintAnswer === undefined ? "Con thử nhìn hai phần trong sơ đồ nhé." : `Đáp án là ${hintAnswer}.`}</p>
           <div class="hint-frame">
             {#each Array(hintFrameData.whole) as _, index}
               <span class:known-counter={index < blueCounterCount} class="hint-counter"><i></i></span>

@@ -50,11 +50,7 @@ describe("NumberBondExercise", () => {
       onHint,
       hint: numberBondHint(exercise, 2),
     });
-    expect(
-      screen.getByText(
-        "Nhìn các chấm theo hai màu. Phần màu xanh lá là phần còn thiếu.",
-      ),
-    ).toBeInTheDocument();
+    expect(screen.getByText(new RegExp(`5 − 2 = \\?`))).toBeInTheDocument();
     expect(screen.queryByText(`Đáp án là ${answer}.`)).not.toBeInTheDocument();
     expect(diagram).toHaveAccessibleName(expect.stringContaining("?"));
   });
@@ -118,5 +114,28 @@ describe("NumberBondExercise", () => {
 
     expect(screen.getByText(/Nhóm bên phải có mấy chấm/)).toBeInTheDocument();
     expect(container.querySelector(".split-divider")).toBeInTheDocument();
+  });
+
+  it("shows all four related facts after a correct answer", () => {
+    const split = generateNumberBondExercise({ seed: 1, stage: "split" });
+    const params = split.generator!.params as {
+      whole: number;
+      partA: number;
+      partB: number;
+    };
+    render(NumberBondExercise, {
+      exercise: split,
+      answered: 0,
+      feedback: "Đúng rồi!",
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+    });
+
+    expect(
+      screen.getByText(`${params.whole} − ${params.partA} = ${params.partB}`),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(`${params.partA} + ${params.partB} = ${params.whole}`),
+    ).toBeInTheDocument();
   });
 });

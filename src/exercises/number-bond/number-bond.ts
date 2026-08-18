@@ -150,22 +150,23 @@ export function numberBondHint(
         exercise.presentation === "combine"
           ? `Ghép ${partA} chấm và ${partB} chấm lại nhé.`
           : exercise.presentation === "split"
-            ? `Có ${whole} chấm. Tìm phần chưa có màu.`
+            ? `${whole} − ${partA} = ?`
             : exercise.unknown === "whole"
               ? `${partA} và ${partB} ghép lại tạo thành số nào?`
               : `${whole} gồm hai phần. Con thử nhìn phần còn thiếu nhé.`,
     };
   }
   if (level === 2) {
+    const equationHint =
+      exercise.unknown === "whole"
+        ? `${partA} + ${partB} = ?`
+        : exercise.unknown === "part-a"
+          ? `${whole} − ${partB} = ?   •   ${whole} − ? = ${partB}   •   ${partB} + ? = ${whole}   •   ? + ${partB} = ${whole}`
+          : `${whole} − ${partA} = ?   •   ${whole} − ? = ${partA}   •   ${partA} + ? = ${whole}   •   ? + ${partA} = ${whole}`;
     return {
       level,
       type: "visual",
-      payload: {
-        whole,
-        partA: generator?.partA,
-        partB: generator?.partB,
-        answer,
-      },
+      payload: equationHint,
     };
   }
   return {
