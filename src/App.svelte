@@ -266,7 +266,8 @@
     if (answered >= sessionTarget) {
       if (
         currentExercise.kind === 'part-whole' ||
-        currentExercise.kind === 'arithmetic'
+        currentExercise.kind === 'arithmetic' ||
+        currentExercise.kind === 'story'
       )
         return;
       await finishSession();
@@ -274,7 +275,8 @@
     }
     if (
       currentExercise.kind === 'part-whole' ||
-      currentExercise.kind === 'arithmetic'
+      currentExercise.kind === 'arithmetic' ||
+      currentExercise.kind === 'story'
     )
       return;
     window.setTimeout(refreshExercise, 450);
@@ -299,6 +301,15 @@
       !feedback.includes('Đúng')
     )
       return;
+    if (answered >= sessionTarget) {
+      await finishSession();
+      return;
+    }
+    refreshExercise();
+  }
+
+  async function continueStory(): Promise<void> {
+    if (currentExercise?.kind !== 'story' || !feedback.includes('Đúng')) return;
     if (answered >= sessionTarget) {
       await finishSession();
       return;
@@ -406,7 +417,7 @@
   {:else if currentExercise.kind === 'arithmetic' || currentExercise.kind === 'missing-number'}
     <EquationPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} onNext={continueArithmetic} />
   {:else if currentExercise.kind === 'story'}
-    <StoryPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
+    <StoryPractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} onNext={continueStory} />
   {:else if currentExercise.kind === 'triangle'}
     <TrianglePractice exercise={currentExercise} {feedback} {hint} {answered} onAnswer={answerExercise} onHint={showHint} />
   {/if}

@@ -57,4 +57,37 @@ describe("StoryPractice", () => {
       `${exercise.startCount}+${exercise.changeCount}=${exercise.total}`,
     );
   });
+
+  it("shows related facts and waits for read-aloud continuation", async () => {
+    const onNext = vi.fn();
+    const exercise = generateStoryExercise({
+      seed: 1,
+      storyType: "take-away",
+      stage: "result",
+    });
+    render(StoryPractice, {
+      exercise,
+      feedback: "Đúng rồi!",
+      answered: 0,
+      onAnswer: vi.fn(),
+      onHint: vi.fn(),
+      onNext,
+    });
+
+    expect(
+      screen.getByText(
+        `${exercise.startCount} − ${exercise.changeCount} = ${exercise.total}`,
+      ),
+    ).toBeInTheDocument();
+    expect(
+      screen.getByText(
+        `${exercise.changeCount} + ${exercise.total} = ${exercise.startCount}`,
+      ),
+    ).toBeInTheDocument();
+    expect(screen.queryByRole("button", { name: "0" })).not.toBeInTheDocument();
+    await fireEvent.click(
+      screen.getByRole("button", { name: "Con đã đọc xong, tiếp tục" }),
+    );
+    expect(onNext).toHaveBeenCalledOnce();
+  });
 });
