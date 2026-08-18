@@ -11,8 +11,9 @@
 
 body {
   margin: 0;
-  min-width: 320px;
   min-height: 100vh;
+  min-width: 0;
+  overflow-x: clip;
 }
 button,
 input {
@@ -44,9 +45,11 @@ button:disabled {
 .page {
   margin: 0 auto;
   min-height: 100vh;
+  min-height: 100dvh;
   max-width: 760px;
+  min-width: 0;
   padding: max(24px, env(safe-area-inset-top)) 24px
-    max(32px, env(safe-area-inset-bottom));
+    max(144px, calc(env(safe-area-inset-bottom) + 112px));
 }
 .topbar {
   align-items: center;
@@ -366,7 +369,7 @@ h2 {
 .number-grid {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(6, 1fr);
+  grid-template-columns: repeat(6, minmax(0, 1fr));
   margin-top: 12px;
 }
 .number-grid button {
@@ -477,7 +480,7 @@ h2 {
   font-size: 1.2rem;
   font-weight: 700;
   gap: 8px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin: 12px auto 0;
   max-width: 420px;
 }
@@ -500,7 +503,7 @@ h2 {
   font-weight: 700;
   height: 38px;
   justify-content: center;
-  min-width: 24px;
+  min-width: 0;
   position: relative;
 }
 .strategy-number-line span.line-step {
@@ -702,7 +705,7 @@ h2 {
 .quantity-match-options {
   display: grid;
   gap: 12px;
-  grid-template-columns: repeat(3, 1fr);
+  grid-template-columns: repeat(3, minmax(0, 1fr));
   margin: 28px auto;
   max-width: 580px;
 }
@@ -757,7 +760,7 @@ h2 {
 .story-choice-grid {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(2, minmax(0, 1fr));
   margin-top: 12px;
 }
 .story-choice-grid button,
@@ -769,6 +772,8 @@ h2 {
   font-size: 1.125rem;
   font-weight: 700;
   min-height: 52px;
+  min-width: 0;
+  overflow-wrap: anywhere;
   padding: 8px;
 }
 .story-choice-grid button:hover,
@@ -779,12 +784,13 @@ h2 {
 .equation-builder {
   display: grid;
   gap: 10px;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(4, minmax(0, 1fr));
   margin: 12px 0;
 }
 .equation-builder div {
   display: grid;
   gap: 6px;
+  min-width: 0;
 }
 .equation-builder strong {
   color: #475569;
@@ -921,6 +927,7 @@ h2 {
 
 @media (max-width: 480px) {
   .page {
+    padding-bottom: max(160px, calc(env(safe-area-inset-bottom) + 128px));
     padding-left: 16px;
     padding-right: 16px;
   }
@@ -939,6 +946,28 @@ h2 {
   }
   .quantity-frame {
     gap: 5px;
+  }
+  .exercise-card {
+    padding: 20px 14px;
+  }
+  .number-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  .number-grid button {
+    min-width: 0;
+    padding: 8px 2px;
+  }
+  .quantity-match-options {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+  .story-choice-grid {
+    grid-template-columns: 1fr;
+  }
+  .fact-family {
+    grid-template-columns: 1fr;
+  }
+  .strategy-number-line span {
+    font-size: 0.75rem;
   }
 }
 
