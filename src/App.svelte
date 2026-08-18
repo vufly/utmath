@@ -95,7 +95,7 @@
                 ? generateStoryExercise({ seed, stage: ['direction', 'before-after', 'parts-whole', 'operator', 'numbers', 'equation-choice', 'build', 'result'][answered % 8] as StoryStage })
                 : generateTriangleExercise({
                     seed,
-                    definitionId: ['three-separate', 'four-in-rectangle', 'rectangle-composites', 'rectangle-composites'][answered % 4],
+                    definitionId: ['worksheet-wedge', 'four-in-rectangle', 'rectangle-composites', 'rectangle-composites'][answered % 4],
                     stage: answered % 4 === 3 ? 'independent' : 'select',
                   });
     feedback = '';
