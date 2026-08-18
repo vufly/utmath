@@ -147,10 +147,16 @@ h2 {
   font-weight: 600;
 }
 .reward-strip .reward-card {
-  align-items: center;
+  align-items: flex-start;
   display: flex;
+  flex-direction: column;
+  gap: 4px;
   justify-content: center;
   min-height: 96px;
+}
+.reward-strip .reward-label {
+  color: #475569;
+  font-size: 0.875rem;
 }
 .reward-count,
 .streak-count {

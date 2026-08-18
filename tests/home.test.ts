@@ -17,7 +17,8 @@ describe("Home", () => {
     expect(container.querySelectorAll(".star-icon")).toHaveLength(1);
     expect(container.querySelectorAll(".fire-icon")).toHaveLength(1);
     expect(screen.getByText("1")).toBeInTheDocument();
-    expect(screen.getByText("ngày liên tiếp")).toBeInTheDocument();
+    expect(screen.getByText("Chuỗi ngày học")).toBeInTheDocument();
+    expect(screen.getByText("Ngôi sao của con")).toBeInTheDocument();
     expect(screen.getByText("3 ngôi sao")).toHaveClass("sr-only");
   });
 });
