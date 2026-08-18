@@ -31,15 +31,37 @@ describe("authored triangle exercises", () => {
   it("keeps worksheet-style composite counts authored explicitly", () => {
     const exercise = generateTriangleExercise({
       seed: 1,
-      definitionId: "rectangle-composites",
+      definitionId: "worksheet-wedge",
     });
 
     expect(triangleAnswer(exercise)).toBe(8);
     expect(
       evaluateTriangleAnswer(exercise, {
         count: 7,
-        selectedIds: ["top", "right", "bottom", "left"],
+        selectedIds: [
+          "a-b-d",
+          "b-d-e",
+          "d-e-f",
+          "e-f-g",
+          "f-g-h",
+          "g-h-i",
+          "h-i-c",
+        ],
       }).errorCode,
     ).toBe("missed-composite-triangle");
+  });
+
+  it("requires the authored triangle regions in selection mode", () => {
+    const exercise = generateTriangleExercise({
+      seed: 1,
+      definitionId: "worksheet-wedge",
+    });
+
+    expect(
+      evaluateTriangleAnswer(exercise, {
+        count: 8,
+        selectedIds: Array(8).fill("a-b-d"),
+      }).correct,
+    ).toBe(false);
   });
 });

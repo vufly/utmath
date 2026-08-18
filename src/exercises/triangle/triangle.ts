@@ -25,16 +25,16 @@ export interface TriangleDefinition {
   hintTriangleId: string;
 }
 
-const separatePoints: TrianglePoint[] = [
-  { id: "a", x: 35, y: 35 },
-  { id: "b", x: 15, y: 100 },
-  { id: "c", x: 55, y: 100 },
-  { id: "d", x: 100, y: 35 },
-  { id: "e", x: 80, y: 100 },
-  { id: "f", x: 120, y: 100 },
-  { id: "g", x: 165, y: 35 },
-  { id: "h", x: 145, y: 100 },
-  { id: "i", x: 185, y: 100 },
+const worksheetWedgePoints: TrianglePoint[] = [
+  { id: "a", x: 20, y: 20 },
+  { id: "b", x: 20, y: 180 },
+  { id: "c", x: 180, y: 180 },
+  { id: "d", x: 60, y: 60 },
+  { id: "e", x: 60, y: 180 },
+  { id: "f", x: 100, y: 100 },
+  { id: "g", x: 100, y: 180 },
+  { id: "h", x: 140, y: 140 },
+  { id: "i", x: 140, y: 180 },
 ];
 
 const rectanglePoints: TrianglePoint[] = [
@@ -58,25 +58,31 @@ const rectangleEdges: Array<[string, string]> = [
 
 export const triangleDefinitions: TriangleDefinition[] = [
   {
-    id: "three-separate",
-    points: separatePoints,
+    id: "worksheet-wedge",
+    points: worksheetWedgePoints,
     edges: [
       ["a", "b"],
-      ["b", "c"],
       ["c", "a"],
+      ["b", "c"],
+      ["b", "d"],
       ["d", "e"],
       ["e", "f"],
-      ["f", "d"],
+      ["f", "g"],
       ["g", "h"],
       ["h", "i"],
-      ["i", "g"],
+      ["i", "c"],
     ],
     validTriangles: [
-      { id: "left", vertices: ["a", "b", "c"], sizeClass: "small" },
-      { id: "middle", vertices: ["d", "e", "f"], sizeClass: "small" },
-      { id: "right", vertices: ["g", "h", "i"], sizeClass: "small" },
+      { id: "a-b-d", vertices: ["a", "b", "d"], sizeClass: "small" },
+      { id: "b-d-e", vertices: ["b", "d", "e"], sizeClass: "small" },
+      { id: "d-e-f", vertices: ["d", "e", "f"], sizeClass: "small" },
+      { id: "e-f-g", vertices: ["e", "f", "g"], sizeClass: "small" },
+      { id: "f-g-h", vertices: ["f", "g", "h"], sizeClass: "small" },
+      { id: "g-h-i", vertices: ["g", "h", "i"], sizeClass: "small" },
+      { id: "h-i-c", vertices: ["h", "i", "c"], sizeClass: "small" },
+      { id: "whole", vertices: ["a", "b", "c"], sizeClass: "large" },
     ],
-    hintTriangleId: "right",
+    hintTriangleId: "whole",
   },
   {
     id: "four-in-rectangle",
@@ -197,16 +203,23 @@ export function evaluateTriangleAnswer(
           (id): id is string => typeof id === "string",
         )
       : [];
+  const definition = triangleDefinitions.find(
+    (item) => item.id === exercise.definitionId,
+  );
   const normalizedAnswer =
     typeof answer === "object" && answer !== null
       ? Number((answer as { count?: unknown }).count)
       : typeof answer === "number"
         ? answer
         : Number(answer);
-  const correct = normalizedAnswer === triangleAnswer(exercise);
-  const definition = triangleDefinitions.find(
-    (item) => item.id === exercise.definitionId,
-  );
+  const hasExactSelection =
+    selectedIds.length === 0 ||
+    (selectedIds.length === definition?.validTriangles.length &&
+      definition.validTriangles.every((triangle) =>
+        selectedIds.includes(triangle.id),
+      ));
+  const correct =
+    normalizedAnswer === triangleAnswer(exercise) && hasExactSelection;
   const missed = definition?.validTriangles.find(
     (triangle) => !selectedIds.includes(triangle.id),
   );

@@ -8,7 +8,7 @@ describe("TrianglePractice", () => {
     const onAnswer = vi.fn();
     const exercise = generateTriangleExercise({
       seed: 1,
-      definitionId: "three-separate",
+      definitionId: "worksheet-wedge",
     });
     const { container } = render(TrianglePractice, {
       exercise,
@@ -23,14 +23,27 @@ describe("TrianglePractice", () => {
     expect(
       screen.getByText("Con đã tìm tam giác này rồi."),
     ).toBeInTheDocument();
-    await fireEvent.click(regions[1]!);
-    await fireEvent.click(regions[2]!);
+    for (const region of Array.from(regions).slice(1)) {
+      await fireEvent.click(region);
+    }
 
-    expect(screen.getByText("3")).toBeInTheDocument();
+    expect(screen.getByRole("button", { name: "Lớn" })).toBeInTheDocument();
+    expect(screen.getByText("7")).toBeInTheDocument();
+    await fireEvent.click(screen.getByRole("button", { name: "Lớn" }));
+    await fireEvent.click(container.querySelector("polygon")!);
     await fireEvent.click(screen.getByRole("button", { name: "Kiểm tra" }));
     expect(onAnswer).toHaveBeenCalledWith({
-      count: 3,
-      selectedIds: ["left", "middle", "right"],
+      count: 8,
+      selectedIds: [
+        "a-b-d",
+        "b-d-e",
+        "d-e-f",
+        "e-f-g",
+        "f-g-h",
+        "g-h-i",
+        "h-i-c",
+        "whole",
+      ],
     });
   });
 

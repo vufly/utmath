@@ -10,7 +10,7 @@ export default defineConfig({
     svelte(),
     VitePWA({
       registerType: "prompt",
-      includeAssets: ["icon.svg", "social-preview.svg"],
+      includeAssets: ["icon.svg", "social-preview.png", "social-preview.svg"],
       manifest: {
         name: "Uyển Thanh Học Toán",
         short_name: "Uyển Thanh Toán",
